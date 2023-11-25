@@ -1,14 +1,17 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, memo, useCallback, useState} from 'react';
 
 type PropsType = {
     callback: (title: string) => void
-    isBlur?: boolean
+
 
 }
-const Input = (props: PropsType) => {
+const AddItemForm = memo((props: PropsType) => {
+    console.log('add ItemForm')
     let [title, setTitle] = useState("")
     let [error, setError] = useState<string | null>(null)
-    const addTask = () => {
+
+    const addTask = useCallback( () => {
+
         if (title.trim() !== "") {
             props.callback(title.trim())
             // props.addTask(props.todolistID,title.trim());
@@ -16,14 +19,14 @@ const Input = (props: PropsType) => {
         } else {
             setError("Title is required");
         }
-    }
+    },[props.callback, title])
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null);
+        if(error)  setError(null);
         if (e.charCode === 13) {
             addTask();
         }
@@ -41,6 +44,6 @@ const Input = (props: PropsType) => {
             {error && <div className="error-message">{error}</div>}
         </div>
     );
-};
+});
 
-export default Input;
+export default AddItemForm;

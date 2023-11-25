@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Todolist} from './Todolist';
 import {v1} from 'uuid';
-import Input from "./Input";
+import AddItemForm from "./AddItemForm";
 
 export type FilterValuesType = "all" | "active" | "completed";
 export type TodolistsType = {
@@ -121,7 +121,7 @@ function App() {
     return (
         <div className="App">
             <div>
-                <Input callback={addTodolist}/>
+                <AddItemForm callback={addTodolist}/>
             </div>
             {todolists.map(el => {
 

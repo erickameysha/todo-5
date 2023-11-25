@@ -1,9 +1,9 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, memo, useCallback, useState} from 'react';
 type PropsType = {
     title: string
     onClick: (title: string) => void
 }
- const EditableSpan = (props: PropsType) => {
+ const EditableSpan = memo((props: PropsType) => {
     const [edit, setEdit] = useState(false)
     const [newTitle, setTitle] = useState(props.title)
     const editHandler = () => {
@@ -15,9 +15,9 @@ type PropsType = {
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
     }
-    const addTask = () => {
+    const addTask = useCallback( () => {
         props.onClick(newTitle)
-    }
+    },[props.onClick, newTitle])
     return (
         edit ?
             <input value={newTitle}
@@ -28,6 +28,6 @@ type PropsType = {
             :
             <span onDoubleClick={editHandler}>{props.title}</span>
     );
-};
+});
 export default  EditableSpan
 

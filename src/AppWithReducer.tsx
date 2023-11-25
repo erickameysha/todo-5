@@ -2,7 +2,7 @@ import React, {Reducer, useEffect, useReducer, useState} from 'react';
 import './App.css';
 import {Todolist} from './Todolist';
 import {v1} from 'uuid';
-import Input from "./Input";
+import AddItemForm from "./AddItemForm";
 import {
     ActionType, addTodolistAC,
     changeFilterAC,
@@ -117,7 +117,7 @@ const action =  addTodolistAC(title)
     return (
         <div className="App">
             <div>
-                <Input callback={addTodolist}/>
+                <AddItemForm callback={addTodolist}/>
             </div>
             {todolists.map(el => {
 
