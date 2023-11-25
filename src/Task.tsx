@@ -1,4 +1,4 @@
-import React, {ChangeEvent, memo} from 'react';
+import React, {ChangeEvent, memo, useCallback} from 'react';
 import EditableSpan from "./EditableSpan";
 import {TaskType} from "./AppWithRedux";
 
@@ -11,15 +11,13 @@ type  TaskPropsType = {
 
 }
 const Task = memo(({task,changeTaskTitle,changeTaskStatus,removeTask}: TaskPropsType) => {
-    console.log('task' )
-    const onClickHandler = () => removeTask( task.id)
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const onClickHandler = useCallback(() => removeTask(task.id),[removeTask])
+    const onChangeHandler = useCallback( (e: ChangeEvent<HTMLInputElement>) => {
         changeTaskStatus( task.id, e.currentTarget.checked);
-    }
-    const changeTitle =(title: string) => {
-        debugger
+    },[changeTaskStatus])
+    const changeTitle = useCallback((title: string) => {
         changeTaskTitle(title,task.id)
-    }
+    },[changeTaskTitle])
     return (
         <li style={{display: 'flex', paddingBottom: '5px'}}
             className={task.isDone ? "is-done" : ""}>

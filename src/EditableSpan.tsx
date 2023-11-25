@@ -4,6 +4,7 @@ type PropsType = {
     onClick: (title: string) => void
 }
  const EditableSpan = memo((props: PropsType) => {
+
     const [edit, setEdit] = useState(false)
     const [newTitle, setTitle] = useState(props.title)
     const editHandler = () => {

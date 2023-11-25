@@ -24,10 +24,9 @@ type PropsType = {
     filter: FilterValuesType
 }
 export const Todolist = memo((props: PropsType) => {
-    console.log('Todolist')
-    const removeTodolist = () => {
+    const removeTodolist = useCallback(() => {
         props.removeTodolist(props.todolistID)
-    }
+    },[props.removeTask, props.todolistID])
     const onAllClickHandler = useCallback(() => props.changeFilter(props.todolistID, "all"), [props.changeFilter, props.todolistID]);
     const onActiveClickHandler = useCallback(() => props.changeFilter(props.todolistID, "active"), [props.changeFilter, props.todolistID]);
     const onCompletedClickHandler = useCallback(() => props.changeFilter(props.todolistID, "completed"), [props.changeFilter, props.todolistID]);
