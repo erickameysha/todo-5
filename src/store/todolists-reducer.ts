@@ -1,31 +1,40 @@
-import {FilterValuesType, TodolistsType} from "../App";
 import {v1} from "uuid";
+import { TaskStatuses, TodolistType} from "./todolistApi";
 
-export type AddTodolistACType =     ReturnType<typeof addTodolistAC>
-export type removeTodolistACType =     ReturnType<typeof removeTodolistAC>
+export type AddTodolistACType = ReturnType<typeof addTodolistAC>
+export type removeTodolistACType = ReturnType<typeof removeTodolistAC>
 export type ActionType =
     ReturnType<typeof removeTodolistAC> |
-    AddTodolistACType
-|
+    AddTodolistACType |
     ReturnType<typeof changeTodolistTitleAC> |
     ReturnType<typeof changeFilterAC>
-
-const initState: TodolistsType[] =[]
-export const todolistsReducer = (state=initState, action: ActionType): TodolistsType[] => {
+export type FilterValuesType = "all" | "active" | "completed";
+const initState: TodolistDomainType[] = []
+export type TodolistDomainType = TodolistType & {
+    filter: FilterValuesType
+}
+export const todolistsReducer = (state = initState, action: ActionType): TodolistDomainType[] => {
     switch (action.type) {
         case 'REMOVE-TODOLIST': {
             return state.filter(el => el.id !== action.payload.id)
         }
         case "ADD-TODOLIST": {
             // const newId = v1()
-            let newTodo: TodolistsType = {id: action.payload.id, title: action.payload.title, filter: 'all'}
+            let newTodo: TodolistDomainType = {
+                id: action.payload.id,
+                title: action.payload.title,
+                order: TaskStatuses.New,
+                addedDate: new Date().toTimeString(),
+                filter: "all"
+
+            }
             return [...state, newTodo]
         }
         case "CHANGE-TODOLIST-TITLE": {
             return state.map(el => el.id === action.payload.todolistID ? {...el, title: action.payload.newTitle} : el)
         }
-        case "CHANGE-TODOLIST-FILTER":{
-            return  state.map(el => el.id === action.payload.todolistID ? {...el, filter: action.payload.value} : el)
+        case "CHANGE-TODOLIST-FILTER": {
+            return state.map(el => el.id === action.payload.todolistID ? {...el, filter: action.payload.value} : el)
         }
         default:
             return state

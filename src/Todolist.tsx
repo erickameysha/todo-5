@@ -1,15 +1,13 @@
-import React, {ChangeEvent, memo, useCallback} from 'react'
-import {FilterValuesType} from "./App";
+import React, {memo, useCallback} from 'react'
+// import {FilterValuesType} from "./App";
 import EditableSpan from "./EditableSpan";
 import AddItemForm from "./AddItemForm";
 import Button from "./Button";
 import Task from "./Task";
+import {FilterValuesType} from "./store/todolists-reducer";
+import {TaskStatuses, TaskType} from "./store/todolistApi";
 
-type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
+
 type PropsType = {
     todolistID: string
     title: string
@@ -17,7 +15,7 @@ type PropsType = {
     removeTask: (todolistId: string, taskId: string) => void
     changeFilter: (todolistId: string, value: FilterValuesType) => void
     addTask: (todolistId: string, title: string) => void
-    changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void
+    changeTaskStatus: (todolistId: string, taskId: string, status: TaskStatuses) => void
     removeTodolist: (todolistId: string) => void
     changeTaskTitle: (todolistID: string, newTitle: string, taskId: string) => void
     changeTodolistTitle: (todolistID: string, newTitle: string) => void
@@ -44,13 +42,13 @@ export const Todolist = memo((props: PropsType) => {
     let tasks = props.tasks
 
     if (props.filter === "active") {
-        tasks = tasks.filter(t => !t.isDone);
+        tasks = tasks.filter(t => t.status == TaskStatuses.New);
     }
     if (props.filter === "completed") {
-        tasks = tasks.filter(t => t.isDone);
+        tasks = tasks.filter(t => t.status === TaskStatuses.Completed);
     }
     const removeTask = useCallback((title: string) => props.removeTask(props.todolistID, title), [props.todolistID,props.removeTask])
-    const changeTaskStatus = useCallback((taskId: string, newValue: boolean) => {
+    const changeTaskStatus = useCallback((taskId: string, newValue: TaskStatuses) => {
         props.changeTaskStatus(props.todolistID, taskId, newValue);
     }, [props.todolistID, props.changeTaskStatus])
 

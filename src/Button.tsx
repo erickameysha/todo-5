@@ -1,6 +1,5 @@
 import React, {memo, useCallback} from 'react';
 import  './App.css'
-import {FilterValuesType} from "./App";
 
 type  propsType ={
     filter:string
