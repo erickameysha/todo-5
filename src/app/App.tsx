@@ -12,9 +12,15 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { Menu } from '@mui/icons-material';
+import {useAppSelector} from "./store";
+import {RequestStatusType} from "./app-reduce";
+import {LinearProgress} from "@mui/material";
+import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
 
 
 function App() {
+const status = useAppSelector<RequestStatusType>((state) => state.app.status)
+// const error = useAppSelector<string | null>((state) => state.app.error)
 
     return (
         <div className="App">
@@ -29,7 +35,10 @@ function App() {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
+            {status === 'loading' && <LinearProgress color={'secondary'}/>}
             <Container fixed>
+             <ErrorSnackbar/>
+
                 <TodolistsList/>
             </Container>
         </div>
