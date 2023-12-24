@@ -2,7 +2,8 @@ import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType}
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {AppRootStateType} from '../../app/store'
-import {setErrorAC, SetErrorType, setStatusAC, SetStatusType} from "../../app/app-reduce";
+import {setAppErrorAC, SetErrorType, setStatusAC, SetStatusType} from "../../app/app-reduce";
+import {handleServerAppError, handleServerError} from "../../utils/error-utils";
 
 const initialState: TasksStateType = {}
 
@@ -66,7 +67,9 @@ export const removeTaskTC = (taskId: string, todolistId: string) => (dispatch: D
             const action = removeTaskAC(taskId, todolistId)
             dispatch(action)
             dispatch(setStatusAC("succeeded"))
-        })
+        }).catch((e)=> {
+        handleServerError(dispatch, e)
+    })
 }
 enum RESULT_CODE {
     SUCCEDED = 0,
@@ -83,17 +86,12 @@ export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispa
                 dispatch(action)
                 dispatch(setStatusAC("succeeded"))
             } else {
-                if (res.data.messages.length) {
-                    dispatch(setErrorAC(res.data.messages[0]))
-                    dispatch(setStatusAC("succeeded"))
-                } else {
-                    dispatch(setErrorAC('Some error'))
-
-                }
-                dispatch(setStatusAC("succeeded"))
+                handleServerAppError<{item: TaskType}>(dispatch, res.data)
 
             }
-        })
+        }).catch((e)=> {
+        handleServerError(dispatch, e)
+    })
 
 }
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string) =>
@@ -125,13 +123,15 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
                     dispatch(setStatusAC("succeeded"))
                 } else {
                     if (res.data.messages.length) {
-                        dispatch(setErrorAC(res.data.messages[0]))
+                        dispatch(setAppErrorAC(res.data.messages[0]))
                     } else {
-                        dispatch(setErrorAC('Some error'))
+                        dispatch(setAppErrorAC('Some error'))
                     }
 
                 }
-            })
+            }).catch((e)=> {
+   handleServerError(dispatch, e)
+        })
 
     }
 

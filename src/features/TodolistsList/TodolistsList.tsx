@@ -82,6 +82,7 @@ export const TodolistsList: React.FC = () => {
                     return <Grid item key={tl.id}>
                         <Paper style={{padding: '10px'}}>
                             <Todolist
+
                                 id={tl.id}
                                 title={tl.title}
                                 tasks={allTodolistTasks}
@@ -93,6 +94,7 @@ export const TodolistsList: React.FC = () => {
                                 removeTodolist={removeTodolist}
                                 changeTaskTitle={changeTaskTitle}
                                 changeTodolistTitle={changeTodolistTitle}
+                                entityStatus={tl.entityStatus}
                             />
                         </Paper>
                     </Grid>
