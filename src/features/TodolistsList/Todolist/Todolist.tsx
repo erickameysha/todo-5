@@ -42,6 +42,7 @@ export const Todolist = React.memo(function (props: PropsType) {
     }, [props.addTask, props.id])
 
     const removeTodolist = () => {
+
         props.removeTodolist(props.id)
     }
     const changeTodolistTitle = useCallback((title: string) => {
@@ -72,7 +73,10 @@ export const Todolist = React.memo(function (props: PropsType) {
         <AddItemForm addItem={addTask} disabled={props.entityStatus === 'loading'}/>
         <div>
             {
-                tasksForTodolist.map(t => <Task key={t.id} task={t} todolistId={props.id}
+                tasksForTodolist.map(t => <Task disabled={props.entityStatus === 'loading'}
+                                                key={t.id}
+                                                task={t}
+                                                todolistId={props.id}
                                                 removeTask={props.removeTask}
                                                 changeTaskTitle={props.changeTaskTitle}
                                                 changeTaskStatus={props.changeTaskStatus}
