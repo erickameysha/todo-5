@@ -1,9 +1,16 @@
 import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType} from './todolists-reducer'
-import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
+import {
+    TaskPriorities,
+    TaskStatuses,
+    TaskType,
+    todolistsAPI,
+    UpdateTaskModelType
+} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {AppRootStateType} from '../../app/store'
 import {setAppErrorAC, SetErrorType, setStatusAC, SetStatusType} from "../../app/app-reduce";
 import {handleServerAppError, handleServerError} from "../../utils/error-utils";
+import axios, {AxiosError} from "axios";
 
 const initialState: TasksStateType = {}
 
@@ -64,17 +71,28 @@ export const removeTaskTC = (taskId: string, todolistId: string) => (dispatch: D
     dispatch(setStatusAC("loading"))
     todolistsAPI.deleteTask(todolistId, taskId)
         .then(res => {
-            const action = removeTaskAC(taskId, todolistId)
-            dispatch(action)
-            dispatch(setStatusAC("succeeded"))
-        }).catch((e)=> {
+            if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
+                const action = removeTaskAC(taskId, todolistId)
+                dispatch(action)
+                dispatch(setStatusAC("succeeded"))
+            } else {
+                handleServerAppError(dispatch, res.data)
+            }
+        }).catch((e) => {
         handleServerError(dispatch, e)
     })
 }
-enum RESULT_CODE {
+
+export enum RESULT_CODE {
     SUCCEDED = 0,
     FAILED = 1,
     RECAPTCHA_FAILED = 10
+}
+
+export type ErrorType = {
+    message: string,
+    field: string,
+    code: string
 }
 export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setStatusAC("loading"))
@@ -86,16 +104,17 @@ export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispa
                 dispatch(action)
                 dispatch(setStatusAC("succeeded"))
             } else {
-                handleServerAppError<{item: TaskType}>(dispatch, res.data)
+                handleServerAppError<{ item: TaskType }>(dispatch, res.data)
 
             }
-        }).catch((e)=> {
-        handleServerError(dispatch, e)
+        }).catch((e: AxiosError<ErrorType>) => {
+        const error = e.response ? e.response.data.message : e.message
+        handleServerError(dispatch, {message: error})
     })
 
 }
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string) =>
-    (dispatch: Dispatch<ActionsType>, getState: () => AppRootStateType) => {
+    async (dispatch: Dispatch<ActionsType>, getState: () => AppRootStateType) => {
         const state = getState()
         const task = state.tasks[todolistId].find(t => t.id === taskId)
         dispatch(setStatusAC("loading"))
@@ -114,24 +133,28 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
             status: task.status,
             ...domainModel
         }
-
-        todolistsAPI.updateTask(todolistId, taskId, apiModel)
-            .then(res => {
-                if(res.data.resultCode === RESULT_CODE.SUCCEDED) {
-                    const action = updateTaskAC(taskId, domainModel, todolistId)
-                    dispatch(action)
-                    dispatch(setStatusAC("succeeded"))
+        try {
+            const res = await todolistsAPI.updateTask(todolistId, taskId, apiModel)
+            if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
+                const action = updateTaskAC(taskId, domainModel, todolistId)
+                dispatch(action)
+                dispatch(setStatusAC("succeeded"))
+            } else {
+                if (res.data.messages.length) {
+                    dispatch(setAppErrorAC(res.data.messages[0]))
                 } else {
-                    if (res.data.messages.length) {
-                        dispatch(setAppErrorAC(res.data.messages[0]))
-                    } else {
-                        dispatch(setAppErrorAC('Some error'))
-                    }
-
+                    dispatch(setAppErrorAC('Some error'))
                 }
-            }).catch((e)=> {
-   handleServerError(dispatch, e)
-        })
+
+            }
+        } catch (e) {
+            if (axios.isAxiosError<ErrorType>(e)){
+            handleServerError(dispatch, e)
+                 } else {
+                const error = (e as {message: string})
+                handleServerError(dispatch, error)
+            }
+        }
 
     }
 

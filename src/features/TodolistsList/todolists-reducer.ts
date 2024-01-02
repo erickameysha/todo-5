@@ -1,7 +1,13 @@
 import {todolistsAPI, TodolistType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
-import {RequestStatusType, setAppErrorAC, SetErrorType, setStatusAC, SetStatusType} from "../../app/app-reduce";
+import {
 
+    RequestStatusType,
+    setAppErrorAC,
+    SetErrorType,
+    setStatusAC,
+    SetStatusType
+} from "../../app/app-reduce";
 const initialState: Array<TodolistDomainType> = []
 
 export const todolistsReducer = (state: Array<TodolistDomainType> = initialState, action: ActionsType): Array<TodolistDomainType> => {
@@ -55,13 +61,13 @@ export const fetchTodolistsTC = () => {
             })
     }
 }
-export const removeTodolistTC = (todolistId: string) => {
+export const removeTodolistTC =  (todolistId: string) => {
 
     return (dispatch: Dispatch<ActionsType>) => {
         dispatch(setStatusAC("loading"))
         dispatch(setEntityStatusAC(todolistId, "loading"))
         todolistsAPI.deleteTodolist(todolistId)
-            .then((res) => {
+            .then(() => {
                 dispatch(setStatusAC("succeeded"))
                 dispatch(setEntityStatusAC(todolistId, "idle"))
                 dispatch(removeTodolistAC(todolistId))
@@ -79,6 +85,8 @@ export const removeTodolistTC = (todolistId: string) => {
             })
     }
 }
+
+
 export const addTodolistTC = (title: string) => {
     return (dispatch: Dispatch<ActionsType>) => {
         dispatch(setStatusAC("loading"))
@@ -93,7 +101,7 @@ export const changeTodolistTitleTC = (id: string, title: string) => {
     return (dispatch: Dispatch<ActionsType>) => {
         dispatch(setStatusAC("loading"))
         todolistsAPI.updateTodolist(id, title)
-            .then((res) => {
+            .then(() => {
                 dispatch(changeTodolistTitleAC(id, title))
                 dispatch(setStatusAC("succeeded"))
             })

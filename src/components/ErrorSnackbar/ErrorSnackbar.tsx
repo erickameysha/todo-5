@@ -20,7 +20,7 @@ const dispatch = useDispatch()
         dispatch(setAppErrorAC(null))
     }
     return (
-        <Snackbar open={!!error} autoHideDuration={600} onClose={handleClose}>
+        <Snackbar open={!!error} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity='error' sx={{width: '100%'}}>
                 {error}            </Alert>
         </Snackbar>
