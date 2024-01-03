@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css'
-import { TodolistsList } from '../features/TodolistsList/TodolistsList'
+import {TodolistsList} from '../features/TodolistsList/TodolistsList'
 
 // You can learn about the difference by reading this guide on minimizing bundle size.
 // https://mui.com/guides/minimizing-bundle-size/
@@ -11,17 +11,17 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { Menu } from '@mui/icons-material';
+import {Menu} from '@mui/icons-material';
 import {useAppSelector} from "./store";
 import {RequestStatusType} from "./app-reduce";
 import {LinearProgress} from "@mui/material";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
+import {Login} from "../features/Login/Login";
+import {Navigate, Route, Routes} from "react-router-dom";
 
 
 function App() {
-const status = useAppSelector<RequestStatusType>((state) => state.app.status)
-// const error = useAppSelector<string | null>((state) => state.app.error)
-
+    const status = useAppSelector<RequestStatusType>((state) => state.app.status)
     return (
         <div className="App">
             <AppBar position="static">
@@ -37,9 +37,16 @@ const status = useAppSelector<RequestStatusType>((state) => state.app.status)
             </AppBar>
             {status === 'loading' && <LinearProgress color={'secondary'}/>}
             <Container fixed>
-             <ErrorSnackbar/>
+                <ErrorSnackbar/>
+                <Routes>
+                    <Route path={'/'} element={<TodolistsList/>}/>
+                    <Route path={'/login'} element={<Login/>}/>
+                    <Route path={'/404'} element={<h1>404: Page not found</h1>}/>
+                    <Route path={'*'} element={<Navigate to={'/404'}/>}/>
+                    {/*<TodolistsList/>*/}
+                    {/*<Login/>*/}
+                </Routes>
 
-                <TodolistsList/>
             </Container>
         </div>
     )

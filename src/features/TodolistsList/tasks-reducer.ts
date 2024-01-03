@@ -8,7 +8,7 @@ import {
 } from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {AppRootStateType} from '../../app/store'
-import {RequestStatusType, setAppErrorAC, SetErrorType, setStatusAC, SetStatusType} from "../../app/app-reduce";
+import {RequestStatusType, setAppErrorAC, SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType} from "../../app/app-reduce";
 import {handleServerAppError, handleServerError} from "../../utils/error-utils";
 import axios from "axios";
 
@@ -66,12 +66,12 @@ export const setEntityStatusAC = (taskId: string, todolistId: string, status: Re
 
 // thunks
 export const fetchTasksTC = (todolistId: string) => async (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setStatusAC("loading"))
+    dispatch(setAppStatusAC("loading"))
     try {
         const res = await todolistsAPI.getTasks(todolistId)
         console.log(res)
         dispatch(setTasksAC(res.data.items, todolistId))
-        dispatch(setStatusAC("succeeded"))
+        dispatch(setAppStatusAC("succeeded"))
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e)) {
             handleServerError(dispatch, e)
@@ -80,14 +80,14 @@ export const fetchTasksTC = (todolistId: string) => async (dispatch: Dispatch<Ac
 
 }
 export const removeTaskTC = (taskId: string, todolistId: string) => async (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setStatusAC("loading"))
+    dispatch(setAppStatusAC("loading"))
     dispatch(setEntityStatusAC(taskId, todolistId, 'loading'))
     try {
         const res = await todolistsAPI.deleteTask(todolistId, taskId)
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
             const action = removeTaskAC(taskId, todolistId)
             dispatch(action)
-            dispatch(setStatusAC("succeeded"))
+            dispatch(setAppStatusAC("succeeded"))
             dispatch(setEntityStatusAC(taskId, todolistId, 'idle'))
         } else {
             handleServerAppError(dispatch, res.data)
@@ -122,7 +122,7 @@ export const addTaskTC = (title: string, todolistId: string) => async (dispatch:
             const task = res.data.data.item
             const action = addTaskAC(task)
             dispatch(action)
-            dispatch(setStatusAC("succeeded"))
+            dispatch(setAppStatusAC("succeeded"))
         } else {
             handleServerAppError<{ item: TaskType }>(dispatch, res.data)
 
@@ -139,7 +139,7 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
         const state = getState()
         const task = state.tasks[todolistId].find(t => t.id === taskId)
 
-        dispatch(setStatusAC("loading"))
+        dispatch(setAppStatusAC("loading"))
         dispatch(setEntityStatusAC(taskId, todolistId, 'loading'))
         if (!task) {
             //throw new Error("task not found in the state");
@@ -161,7 +161,7 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
             if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
                 const action = updateTaskAC(taskId, domainModel, todolistId)
                 dispatch(action)
-                dispatch(setStatusAC("succeeded"))
+                dispatch(setAppStatusAC("succeeded"))
                 dispatch(setEntityStatusAC(taskId, todolistId,'idle'))
             } else {
                 if (res.data.messages.length) {
@@ -203,6 +203,6 @@ type ActionsType =
     | RemoveTodolistActionType
     | SetTodolistsActionType
     | ReturnType<typeof setTasksAC>
-    | SetStatusType
-    | SetErrorType
+    | SetAppStatusActionType
+    | SetAppErrorActionType
     | ReturnType<typeof setEntityStatusAC>
