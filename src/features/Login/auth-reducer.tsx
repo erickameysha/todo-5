@@ -24,11 +24,28 @@ export const setIsLoggedInAC = (value: boolean) =>
     ({type: 'login/SET-IS-LOGGED-IN', value} as const)
 
 // thunks
+export const meTC = () => async (dispatch: Dispatch<ActionsType>) => {
+    dispatch(setAppStatusAC('loading'))
+    try {
+        const res = await authAPI.me()
+        if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
+            dispatch(setIsLoggedInAC(true))
+            setAppStatusAC('succeeded')
+        } else {
+            handleServerAppError(dispatch, res.data)
+        }
+    } catch (e) {
+        if (axios.isAxiosError(e))
+            handleServerError(dispatch, e)
+    }
+}
+
 export const loginTC = (data: any) => async (dispatch: Dispatch<ActionsType>) => {
     dispatch(setAppStatusAC('loading'))
     try {
         const res = await authAPI.login(data)
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
+            setAppStatusAC('succeeded')
             dispatch(setIsLoggedInAC(true))
         } else {
             handleServerAppError(dispatch, res.data)

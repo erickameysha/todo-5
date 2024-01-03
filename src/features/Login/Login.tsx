@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -8,16 +8,27 @@ import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useFormik} from "formik";
-import {useAppDispatch} from "../../app/store";
+import {useAppDispatch, useAppSelector} from "../../app/store";
 import {loginTC} from "./auth-reducer";
+import {Navigate} from "react-router-dom";
+import {setAppStatusAC} from "../../app/app-reduce";
 
 type FormikErrorType = {
-    email?:string,
-    password?:string
+    email?: string,
+    password?: string
 }
-
+export type LoginDataType = {
+    email: string,
+    password: string,
+    rememberMe: boolean
+}
 export const Login = () => {
     const dispatch = useAppDispatch()
+    const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
+    const status = useAppSelector<any>((state) => state.app.status)
+    useEffect(() => {
+        // dispatch(setAppStatusAC('idle'))
+    })
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -29,25 +40,29 @@ export const Login = () => {
             const errors: FormikErrorType = {}
             if (!values.email) {
                 errors.email = 'Required';
-            }else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$n/i.test(values.email)) {
+            } else if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$n/i.test(values.email)) {
                 errors.email = 'Invalid email address'
             }
 
-            if (!values.password){
+            if (!values.password) {
                 errors.password = 'Required'
-            }else if (values.password.length < 5) {
+            } else if (values.password.length < 5) {
                 errors.password = 'Must be more five symbols'
             }
             console.log(errors)
             return errors
         },
-        onSubmit: values => {
-            dispatch(loginTC(values))
-            alert(JSON.stringify(values, null,2));
+        onSubmit: async (values, _) => {
+            _.setSubmitting(true)
+            await dispatch(loginTC(values))
+            // alert(JSON.stringify(values, null,2));
+            _.setSubmitting(false)
             formik.resetForm()
         },
     })
-    console.log(formik.values)
+    if (isLoggedIn) {
+        return <Navigate to={'/'}/>
+    }
     return <Grid container justifyContent={'center'}>
         <Grid item justifyContent={'center'}>
             <FormControl>
@@ -66,12 +81,11 @@ export const Login = () => {
                         <TextField
                             label="Email"
                             margin="normal"
-                            error={ !!(formik.touched.email && formik.errors.email)}
+                            error={!!(formik.touched.email && formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
                             {...formik.getFieldProps('email')}
                         />
-                        {/*{formik.touched.email && formik.errors.email ? <div style={{color:"red"}}>{formik.errors.email}</div> : null}*/}
-                        <TextField
+                          <TextField
                             type="password"
                             label="Password"
                             margin="normal"
@@ -79,7 +93,6 @@ export const Login = () => {
                             helperText={formik.touched.password && formik.errors.password}
                             {...formik.getFieldProps('password')}
                         />
-                        {/*{formik.touched.password && formik.errors.password ? <div style={{color:"red"}}>{formik.errors.password}</div> : null}*/}
                         <FormControlLabel
                             label={'Remember me'}
                             control={

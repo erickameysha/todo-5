@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './App.css'
 import {TodolistsList} from '../features/TodolistsList/TodolistsList'
 
@@ -12,15 +12,20 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import {Menu} from '@mui/icons-material';
-import {useAppSelector} from "./store";
+import {useAppDispatch, useAppSelector} from "./store";
 import {RequestStatusType} from "./app-reduce";
 import {LinearProgress} from "@mui/material";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
 import {Login} from "../features/Login/Login";
 import {Navigate, Route, Routes} from "react-router-dom";
+import {meTC} from "../features/Login/auth-reducer";
 
 
 function App() {
+    const dispatch= useAppDispatch()
+    useEffect(()=>{
+        dispatch(meTC())
+    },[])
     const status = useAppSelector<RequestStatusType>((state) => state.app.status)
     return (
         <div className="App">
