@@ -14,19 +14,35 @@ import Container from '@mui/material/Container';
 import {Menu} from '@mui/icons-material';
 import {useAppDispatch, useAppSelector} from "./store";
 import {RequestStatusType} from "./app-reduce";
-import {LinearProgress} from "@mui/material";
+import {CircularProgress, LinearProgress} from "@mui/material";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
 import {Login} from "../features/Login/Login";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {meTC} from "../features/Login/auth-reducer";
+import {logOutTC, meTC} from "../features/Login/auth-reducer";
 
 
 function App() {
-    const dispatch= useAppDispatch()
-    useEffect(()=>{
-        dispatch(meTC())
-    },[])
+
+    const isInitialized = useAppSelector((state) => state.app.isInitialized)
     const status = useAppSelector<RequestStatusType>((state) => state.app.status)
+    const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
+
+    const dispatch = useAppDispatch()
+
+    const logOut = () => {
+        dispatch(logOutTC())
+    }
+    useEffect(() => {
+
+        dispatch(meTC())
+    }, [])
+    if (!isInitialized) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+    }
+
     return (
         <div className="App">
             <AppBar position="static">
@@ -37,7 +53,8 @@ function App() {
                     <Typography variant="h6">
                         News
                     </Typography>
-                    <Button color="inherit">Login</Button>
+
+                    <Button onClick={logOut} color="inherit">{isLoggedIn ? 'Logout' : 'Login'}</Button>
                 </Toolbar>
             </AppBar>
             {status === 'loading' && <LinearProgress color={'secondary'}/>}
