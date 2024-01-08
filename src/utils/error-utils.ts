@@ -1,23 +1,21 @@
-import {setAppErrorAC, SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType} from "../app/app-reduce";
 import {Dispatch} from "redux";
 import {ResponseType} from "../api/todolists-api";
+import {appAction} from "../app/app-reduce";
 
 
-export const handleServerError = (dispatch: ErrorUtilsDispatchType, e: { message: string }) => {
-    dispatch(setAppErrorAC(e.message))
-    dispatch(setAppStatusAC('failed'))
+export const handleServerError= (dispatch:Dispatch, e: { message: string }) => {
+    dispatch(appAction.setAppError({error: e.message}))
+    dispatch(appAction.setAppStatus({status: 'failed'}))
 
 }
-export const handleServerAppError = <D>(dispatch:ErrorUtilsDispatchType, data: ResponseType<D>) => {
+export const handleServerAppError = <D>(dispatch: Dispatch, data: ResponseType<D>) => {
     if (data.messages.length) {
-        dispatch(setAppErrorAC(data.messages[0]))
-        dispatch(setAppStatusAC("succeeded"))
+        dispatch(appAction.setAppError({error: data.messages[0]}))
+        dispatch(appAction.setAppStatus({status: "succeeded"}))
     } else {
-        dispatch(setAppErrorAC('Some error'))
+        dispatch(appAction.setAppError({error: 'Some error'}))
 
     }
-    dispatch(setAppStatusAC("succeeded"))
-  
+    dispatch(appAction.setAppStatus({status:"succeeded"}))
+
 }
-type ErrorUtilsDispatchType = Dispatch<SetAppStatusActionType
-    | SetAppErrorActionType>

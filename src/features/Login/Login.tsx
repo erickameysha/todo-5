@@ -11,7 +11,8 @@ import {useFormik} from "formik";
 import {useAppDispatch, useAppSelector} from "../../app/store";
 import {loginTC} from "./auth-reducer";
 import {Navigate} from "react-router-dom";
-import {setAppStatusAC} from "../../app/app-reduce";
+import {appAction} from "../../app/app-reduce";
+
 
 type FormikErrorType = {
     email?: string,
@@ -25,9 +26,9 @@ export type LoginDataType = {
 export const Login = () => {
     const dispatch = useAppDispatch()
     const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
-    const status = useAppSelector<any>((state) => state.app.status)
+    // const status = useAppSelector<any>((state) => state.app.status)
     useEffect(() => {
-        // dispatch(setAppStatusAC('idle'))
+         dispatch(appAction.setAppStatus({status:'idle'}))
     })
     const formik = useFormik({
         initialValues: {

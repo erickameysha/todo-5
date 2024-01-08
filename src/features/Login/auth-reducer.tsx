@@ -1,14 +1,10 @@
 import {Dispatch} from "redux";
-import {
-    SetAppErrorActionType,
-    setAppIsInitializedAC, SetAppIsInitializedACType,
-    setAppStatusAC,
-    SetAppStatusActionType
-} from "../../app/app-reduce";
 import {authAPI} from "../../api/todolists-api";
 import {RESULT_CODE} from "../TodolistsList/tasks-reducer";
 import {handleServerAppError, handleServerError} from "../../utils/error-utils";
 import axios from "axios";
+import {appAction} from "../../app/app-reduce";
+import {AppThunk} from "../../app/store";
 
 
 const initialState = {
@@ -30,12 +26,12 @@ export const setIsLoggedInAC = (value: boolean) =>
 
 // thunks
 export const meTC = () => async (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(appAction.setAppStatus({status:'loading'}))
     try {
         const res = await authAPI.me()
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
             dispatch(setIsLoggedInAC(true))
-            setAppStatusAC('succeeded')
+        dispatch(appAction.setAppStatus({status:'succeeded'}))
         } else {
             handleServerAppError(dispatch, res.data)
         }
@@ -43,16 +39,16 @@ export const meTC = () => async (dispatch: Dispatch<ActionsType>) => {
         if (axios.isAxiosError(e))
             handleServerError(dispatch, e)
     } finally {
-        dispatch(setAppIsInitializedAC(true))
+        dispatch(appAction.setAppIsInitialized({isInitialized:true}))
     }
 }
 
-export const loginTC = (data: any) => async (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setAppStatusAC('loading'))
+export const loginTC = (data: any):AppThunk => async (dispatch) => {
+    dispatch(appAction.setAppStatus({status:'loading'}))
     try {
         const res = await authAPI.login(data)
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
-            setAppStatusAC('succeeded')
+            dispatch(appAction.setAppStatus({status:'succeeded'}))
             dispatch(setIsLoggedInAC(true))
         } else {
             handleServerAppError(dispatch, res.data)
@@ -63,11 +59,11 @@ export const loginTC = (data: any) => async (dispatch: Dispatch<ActionsType>) =>
     }
 }
 export const logOutTC = () => async (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(appAction.setAppStatus({status:'loading'}))
     try {
         const res = await authAPI.logOut()
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
-            setAppStatusAC('succeeded')
+        dispatch(appAction.setAppStatus({status:'succeeded'}))
             dispatch(setIsLoggedInAC(false))
         } else {
             handleServerAppError(dispatch, res.data)
@@ -78,4 +74,4 @@ export const logOutTC = () => async (dispatch: Dispatch<ActionsType>) => {
     }
 }
 // types
-type ActionsType = ReturnType<typeof setIsLoggedInAC> | SetAppStatusActionType | SetAppErrorActionType |SetAppIsInitializedACType
+type ActionsType = ReturnType<typeof setIsLoggedInAC>| any
