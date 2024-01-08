@@ -1,4 +1,3 @@
-import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType} from './todolists-reducer'
 import {
     TaskPriorities,
     TaskStatuses,
@@ -198,9 +197,9 @@ type ActionsType =
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof updateTaskAC>
-    | AddTodolistActionType
-    | RemoveTodolistActionType
-    | SetTodolistsActionType
+    // | AddTodolistActionType
+    // | RemoveTodolistActionType
+    // | SetTodolistsActionType
     | ReturnType<typeof setTasksAC>
     |any
     | ReturnType<typeof setEntityStatusAC>

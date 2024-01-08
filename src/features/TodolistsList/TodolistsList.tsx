@@ -2,12 +2,11 @@ import React, {useCallback, useEffect} from 'react'
 import {useAppDispatch, useAppSelector} from '../../app/store'
 import {
     addTodolistTC,
-    changeTodolistFilterAC,
     changeTodolistTitleTC,
     fetchTodolistsTC,
     FilterValuesType,
     removeTodolistTC,
-    TodolistDomainType
+    TodolistDomainType, todolistsActions
 } from './todolists-reducer'
 import {addTaskTC, removeTaskTC, TasksStateType, updateTaskTC} from './tasks-reducer'
 import {TaskStatuses} from '../../api/todolists-api'
@@ -22,12 +21,12 @@ export const TodolistsList: React.FC = () => {
 
     const todolists = useAppSelector<Array<TodolistDomainType>>(state => state.todolists)
     const tasks = useAppSelector<TasksStateType>(state => state.tasks)
-    const isLoggedIn = useAppSelector<boolean>((state)=> state.auth.isLoggedIn)
+    const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
 
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-      if (!isLoggedIn) return
+        if (!isLoggedIn) return
         const thunk = fetchTodolistsTC()
         console.log('render')
         dispatch(thunk)
@@ -54,7 +53,7 @@ export const TodolistsList: React.FC = () => {
     }, [])
 
     const changeFilter = useCallback(function (value: FilterValuesType, todolistId: string) {
-        const action = changeTodolistFilterAC(todolistId, value)
+        const action = todolistsActions.changeTodolistFilter({id: todolistId, filter: value})
         dispatch(action)
     }, [])
 
