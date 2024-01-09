@@ -50,6 +50,9 @@ const slice = createSlice({
             if (index !== -1) {
                 tasks[index].entityStatus = action.payload.status
             }
+        },
+        logOut:(state)=>{
+          return {};
         }
     },
     extraReducers: (builder) => {
