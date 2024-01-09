@@ -6,9 +6,9 @@ import {
     fetchTodolistsTC,
     FilterValuesType,
     removeTodolistTC,
-    TodolistDomainType, todolistsActions
+     todolistsActions
 } from './todolists-reducer'
-import {addTaskTC, removeTaskTC, TasksStateType, updateTaskTC} from './tasks-reducer'
+import {addTaskTC, removeTaskTC,  updateTaskTC} from './tasks-reducer'
 import {TaskStatuses} from '../../api/todolists-api'
 import {AddItemForm} from '../../components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
@@ -16,12 +16,13 @@ import {Todolist} from './Todolist/Todolist'
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {Navigate} from "react-router-dom";
+import {authSelector, taskSelector, todoSelector} from "../../app/selectors";
 
 export const TodolistsList: React.FC = () => {
 
-    const todolists = useAppSelector<Array<TodolistDomainType>>(state => state.todolists)
-    const tasks = useAppSelector<TasksStateType>(state => state.tasks)
-    const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
+    const todolists = useAppSelector(todoSelector)
+    const tasks = useAppSelector(taskSelector)
+    const {isLoggedIn} = useAppSelector(authSelector)
 
     const dispatch = useAppDispatch()
 

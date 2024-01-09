@@ -1,10 +1,6 @@
 import React, {useEffect} from 'react'
 import './App.css'
 import {TodolistsList} from '../features/TodolistsList/TodolistsList'
-
-// You can learn about the difference by reading this guide on minimizing bundle size.
-// https://mui.com/guides/minimizing-bundle-size/
-// import { AppBar, Button, Container, IconButton, Toolbar, Typography } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -13,19 +9,18 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import {Menu} from '@mui/icons-material';
 import {useAppDispatch, useAppSelector} from "./store";
-import {RequestStatusType} from "./app-reduce";
 import {CircularProgress, LinearProgress} from "@mui/material";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
 import {Login} from "../features/Login/Login";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {logOutTC, meTC} from "../features/Login/auth-reducer";
+import {appSelector, authSelector} from "./selectors";
 
 
 function App() {
 
-    const isInitialized = useAppSelector((state) => state.app.isInitialized)
-    const status = useAppSelector<RequestStatusType>((state) => state.app.status)
-    const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
+    const {isInitialized, status} = useAppSelector(appSelector)
+     const isLoggedIn = useAppSelector(authSelector)
 
     const dispatch = useAppDispatch()
 
