@@ -38,7 +38,7 @@ export const Login = () => {
             rememberMe: false
         },
         validate: (values) => {
-            console.log('render')
+
             const errors: FormikErrorType = {}
             if (!values.email) {
                 errors.email = 'Required';

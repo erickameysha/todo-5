@@ -8,7 +8,7 @@ import {
     removeTodolistTC,
      todolistsActions
 } from './todolists-reducer'
-import {addTaskTC, removeTaskTC,  updateTaskTC} from './tasks-reducer'
+import {addTaskTC, removeTaskTC, tasksThunks, updateTaskTC} from './tasks-reducer'
 import {TaskStatuses} from '../../api/todolists-api'
 import {AddItemForm} from '../../components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
@@ -34,7 +34,7 @@ export const TodolistsList: React.FC = () => {
     }, [])
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
-        const thunk = removeTaskTC(id, todolistId)
+        const thunk = tasksThunks.removeTask({taskId:id, todolistId:todolistId})
         dispatch(thunk)
     }, [])
 

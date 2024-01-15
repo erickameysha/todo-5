@@ -22,11 +22,13 @@ export const store = configureStore({
 // определить автоматически тип всего объекта состояния
 export type AppRootStateType = ReturnType<typeof store.getState>
 // создаем тип диспатча который принимает как AC так и TC
-export type AppThunkDispatch = ThunkDispatch<AppRootStateType, any, AnyAction>
-
-export const useAppDispatch = () => useDispatch<AppThunkDispatch>();
-export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector
+// export type _AppThunkDispatch = ThunkDispatch<AppRootStateType, any, AnyAction>
+export type AppThunkDispatch = typeof store.dispatch
+// export const useAppDispatch = () => useDispatch<AppThunkDispatch>();
+// export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, UnknownAction>
+export const useAppDispatch: () => AppThunkDispatch = useDispatch
+export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector
 
 
 // а это, чтобы можно было в консоли браузера обращаться к store в любой момент
