@@ -3,9 +3,10 @@ import {RESULT_CODE, tasksActions} from "../TodolistsList/tasks-reducer";
 import {handleServerAppError, handleServerError} from "../../utils/error-utils";
 import axios from "axios";
 import {appAction} from "../../app/app-reduce";
-import {AppThunk} from "../../app/store";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+// import {AppThunk} from "../../app/store";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todolistsActions} from "../TodolistsList/todolists-reducer";
+import {AppThunkDispatch} from "../../app/store";
 
 const slice = createSlice({
     name: 'auth',
@@ -22,7 +23,8 @@ export const authReducer = slice.reducer
 export const authActions = slice.actions
 
 // thunks
-export const meTC = (): AppThunk => async (dispatch) => {
+// const meTC = createAsyncThunk('auth/meTC')
+export const meTC = (): AppThunkDispatch => async (dispatch) => {
     dispatch(appAction.setAppStatus({status: 'loading'}))
     try {
         const res = await authAPI.me()

@@ -6,9 +6,9 @@ import {
     fetchTodolistsTC,
     FilterValuesType,
     removeTodolistTC,
-     todolistsActions
+    todolistsActions
 } from './todolists-reducer'
-import {addTaskTC, removeTaskTC, tasksThunks, updateTaskTC} from './tasks-reducer'
+import { tasksThunks} from './tasks-reducer'
 import {TaskStatuses} from '../../api/todolists-api'
 import {AddItemForm} from '../../components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
@@ -39,17 +39,17 @@ export const TodolistsList: React.FC = () => {
     }, [])
 
     const addTask = useCallback(function (title: string, todolistId: string) {
-        const thunk = addTaskTC(title, todolistId)
-        dispatch(thunk)
+        // const thunk = tasksThunks.addTask(title, todolistId)
+        dispatch(tasksThunks.addTask({title,todolistId}))
     }, [])
 
     const changeStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-        const thunk = updateTaskTC(id, {status}, todolistId)
-        dispatch(thunk)
+        // const thunk =
+        dispatch( tasksThunks.updateTask({taskId:id, domainModel:{status}, todolistId}))
     }, [])
 
     const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-        const thunk = updateTaskTC(id, {title: newTitle}, todolistId)
+        const thunk = tasksThunks.updateTask({taskId:id, domainModel:{title: newTitle}, todolistId})
         dispatch(thunk)
     }, [])
 
