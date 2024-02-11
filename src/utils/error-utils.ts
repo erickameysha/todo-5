@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 import {ResponseType} from "../api/todolists-api";
 import {appAction} from "../app/app-reduce";
 import axios from "axios";
-import {AppThunk, AppDispatch} from "../app/store";
+import {AppThunk, AppThunkDispatch,} from "../app/store";
 
 
 export const handleServerError= (dispatch:Dispatch, e: { message: string }) => {
@@ -10,7 +10,7 @@ export const handleServerError= (dispatch:Dispatch, e: { message: string }) => {
     dispatch(appAction.setAppStatus({status: 'failed'}))
 
 }
-export const handleServerNetworkError = (err: unknown, dispatch: AppDispatch):void => {
+export const handleServerNetworkError = (err: unknown, dispatch: AppThunkDispatch):void => {
     let errorMessage = "Some error occurred";
 
     // ❗Проверка на наличие axios ошибки

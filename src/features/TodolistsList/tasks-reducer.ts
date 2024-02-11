@@ -11,6 +11,7 @@ import {handleServerAppError, handleServerError, handleServerNetworkError} from 
 import axios from "axios";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todolistsActions} from "./todolists-reducer";
+import {createAppAsyncThunk} from "../../utils/create-app-async-thunk";
 // import {AppDispatch} from "app/store";
 
 
@@ -75,22 +76,18 @@ const slice = createSlice({
 
 
 // thunks
-const fetchTasks = createAsyncThunk<
+const fetchTasks = createAppAsyncThunk<
     // 1. То, что возвращает Thunk
     {
         tasks: TaskType[],
         todolistId: string
     },
     // 2. ThunkArg - аргументы санки (тип, который санка принимает)
-    string,
+    string
     // 3. AsyncThunkConfig. Какие есть поля смотрим в доке.
     // rejectValue - Используем для типизации возвращаемой ошибки
     // state - используем для типизации App. Когда используем getState
-    {
-        rejectValue: unknown,
-        store: AppRootStateType,
-        dispatch: AppThunkDispatch
-    }>
+>
 ('tasks/fetchTasks', async (todolistId, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
 
@@ -107,14 +104,14 @@ const fetchTasks = createAsyncThunk<
 })
 
 
-export const removeTask = createAsyncThunk<
+export const removeTask = createAppAsyncThunk<
     {
         taskId: string,
         todolistId: string,
     }, {
     taskId: string,
     todolistId: string,
-}, { rejectWithValue: unknown, state: AppRootStateType, dispatch: AppThunkDispatch }>
+}>
 
 ('tasks/removeTask', async (arg, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
@@ -143,9 +140,8 @@ export const removeTask = createAsyncThunk<
     }
 })
 
-const addTask = createAsyncThunk<{ task: TaskType },
-    { title: string, todolistId: string },
-    { rejectWithValue: unknown, state: AppRootStateType, dispatch: AppThunkDispatch }>('tasks/addTask', async (arg, thunkAPI) => {
+const addTask = createAppAsyncThunk<{ task: TaskType },
+    { title: string, todolistId: string }>('tasks/addTask', async (arg, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
     try {
         const res = await todolistsAPI.createTask(arg.todolistId, arg.title)
@@ -168,10 +164,9 @@ const addTask = createAsyncThunk<{ task: TaskType },
     }
 })
 
-const updateTask = createAsyncThunk<
+const updateTask = createAppAsyncThunk<
     { taskId: string; domainModel: UpdateDomainTaskModelType; todolistId: string },
-    { taskId: string, todolistId: string, domainModel: UpdateDomainTaskModelType },
-    { rejectWithValue: unknown, state: AppRootStateType, dispatch: AppThunkDispatch }>
+    { taskId: string, todolistId: string, domainModel: UpdateDomainTaskModelType }>
 ('tasks/updateTask', async (arg, thunkAPI) => {
     const {dispatch, getState, rejectWithValue} = thunkAPI
     const state = getState()

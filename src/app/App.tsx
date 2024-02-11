@@ -13,7 +13,7 @@ import {CircularProgress, LinearProgress} from "@mui/material";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
 import {Login} from "../features/Login/Login";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {logOutTC, meTC} from "../features/Login/auth-reducer";
+import {authThunks, logOutTC} from "../features/Login/auth-reducer";
 import {appSelector, authSelector} from "./selectors";
 
 
@@ -29,7 +29,7 @@ function App() {
     }
     useEffect(() => {
 
-        dispatch(meTC())
+        dispatch(authThunks.meTC())
     }, [])
     if (!isInitialized) {
         return <div
@@ -59,7 +59,7 @@ function App() {
                     <Route path={'/'} element={<TodolistsList/>}/>
                     <Route path={'/login'} element={<Login/>}/>
                     <Route path={'/404'} element={<h1>404: Page not found</h1>}/>
-                    <Route path={'*'} element={<Navigate to={'/404'}/>}/>
+                        <Route path={'*'} element={<Navigate to={'/404'}/>}/>
                     {/*<TodolistsList/>*/}
                     {/*<Login/>*/}
                 </Routes>

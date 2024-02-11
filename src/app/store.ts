@@ -4,7 +4,7 @@ import {AnyAction, combineReducers} from 'redux'
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {appReducer} from "./app-reduce";
 import {authReducer} from "../features/Login/auth-reducer";
-import {configureStore, ThunkDispatch} from "@reduxjs/toolkit";
+import {configureStore, ThunkAction, ThunkDispatch} from "@reduxjs/toolkit";
 import { logger } from 'redux-logger';
 import {thunk} from "redux-thunk";
     // объединяя reducer-ы с помощью combineReducers,
@@ -31,8 +31,8 @@ export type AppRootStateType = ReturnType<typeof store.getState>
 
 export type AppThunkDispatch = ThunkDispatch<AppRootStateType, unknown, AnyAction>;
 
-// export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, AnyAction>
-export const useAppDispatch = () => useDispatch<AppThunkDispatch>();
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, AnyAction>
+export const useAppDispatch =  useDispatch<AppThunkDispatch>;
 export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector
 
 
