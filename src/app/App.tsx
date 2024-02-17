@@ -10,7 +10,7 @@ import Container from '@mui/material/Container';
 import {Menu} from '@mui/icons-material';
 import {useAppDispatch, useAppSelector} from "./store";
 import {CircularProgress, LinearProgress} from "@mui/material";
-import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
+import {ErrorSnackbar} from "../common/components/ErrorSnackbar/ErrorSnackbar";
 import {Login} from "../features/Login/Login";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {authThunks} from "../features/Login/auth-reducer";

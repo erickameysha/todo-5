@@ -5,14 +5,14 @@ import {
     todolistsActions, todolistThunk
 } from './todolists-reducer'
 import { tasksThunks} from './tasks-reducer'
-import {TaskStatuses} from '../../api/todolists-api'
-import {AddItemForm} from '../../components/AddItemForm/AddItemForm'
+import {AddItemForm} from '../../common/components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {Navigate} from "react-router-dom";
 import {authSelector, taskSelector, todoSelector} from "../../app/selectors";
+import {TaskStatuses} from "../../common/enums";
 
 export const TodolistsList: React.FC = () => {
 

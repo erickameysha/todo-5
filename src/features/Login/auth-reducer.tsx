@@ -1,13 +1,14 @@
-import {authAPI} from "../../api/todolists-api";
-import {RESULT_CODE, tasksActions} from "../TodolistsList/tasks-reducer";
-import {handleServerAppError, handleServerError} from "../../utils/error-utils";
+import { tasksActions} from "../TodolistsList/tasks-reducer";
+
 import axios from "axios";
 import {appAction} from "../../app/app-reduce";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todolistsActions} from "../TodolistsList/todolists-reducer";
-import {createAppAsyncThunk} from "../../utils/create-app-async-thunk";
-import {LoginDataType} from "./Login";
 
+
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "../../utils";
+import {authAPI, LoginDataType} from "./authAPI";
+import {RESULT_CODE} from "../../common/enums";
 const slice = createSlice({
     name: 'auth',
     initialState: {
@@ -50,7 +51,7 @@ const meTC = createAppAsyncThunk<{value:boolean}, void>('auth/meTC', async (arg,
         }
     }catch (e) {
         if (axios.isAxiosError(e)) {
-            handleServerError(dispatch, e)
+            handleServerNetworkError( e, dispatch,)
         }
         return rejectWithValue(null)
     } finally {
@@ -73,7 +74,7 @@ export const login = createAppAsyncThunk<{value: boolean},{data:LoginDataType}>(
         }
     }  catch (e) {
         if (axios.isAxiosError(e))
-            handleServerError(dispatch, e)
+           handleServerNetworkError( e, dispatch,)
         return rejectWithValue(null)
     }
 
@@ -95,7 +96,7 @@ export const logOut = createAppAsyncThunk<void,void
         }
     } catch (e) {
         if (axios.isAxiosError(e))
-            handleServerError(dispatch, e)
+           handleServerNetworkError( e, dispatch,)
         return rejectWithValue(null)
     }
 })

@@ -1,16 +1,17 @@
 import {
-    TaskPriorities,
-    TaskStatuses,
+
     TaskType, TaskTypeEntity,
     todolistsAPI,
     UpdateTaskModelType
 } from '../../api/todolists-api'
 import {appAction, RequestStatusType} from "../../app/app-reduce";
-import {handleServerAppError, handleServerError, handleServerNetworkError} from "../../utils/error-utils";
+
 import axios from "axios";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todolistThunk} from "./todolists-reducer";
-import {createAppAsyncThunk} from "../../utils/create-app-async-thunk";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "../../utils";
+import {RESULT_CODE, TaskPriorities, TaskStatuses} from "../../common/enums";
+
 
 
 const slice = createSlice({
@@ -96,6 +97,7 @@ const fetchTasks = createAppAsyncThunk<
         dispatch(appAction.setAppStatus({status: 'succeeded'}))
         return {tasks, todolistId}
     } catch (error) {
+
         handleServerNetworkError(error, dispatch)
         return rejectWithValue(null)
     }
@@ -131,7 +133,7 @@ export const removeTask = createAppAsyncThunk<
         }
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e)) {
-            handleServerError(dispatch, e)
+           handleServerNetworkError( e, dispatch,)
             dispatch(tasksActions.setEntityStatus({taskId: arg.taskId, todolistId: arg.todolistId, status: 'idle'}))
         }
         return rejectWithValue(null)
@@ -157,7 +159,7 @@ const addTask = createAppAsyncThunk<{ task: TaskType },
         }
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e))
-            handleServerError(dispatch, e)
+           handleServerNetworkError( e, dispatch,)
         return rejectWithValue(null)
     }
 })
@@ -207,12 +209,12 @@ const updateTask = createAppAsyncThunk<
         }
     } catch (e) {
         if (axios.isAxiosError<ErrorType>(e)) {
-            handleServerError(dispatch, e)
+           handleServerNetworkError( e, dispatch,)
         } else {
             const error = (e as {
                 message: string
             })
-            handleServerError(dispatch, error)
+            handleServerNetworkError(e, dispatch)
         }
         return rejectWithValue(null)
     }
@@ -232,11 +234,6 @@ export type TasksStateType = {
     [key: string]: Array<TaskTypeEntity>
 }
 
-export enum RESULT_CODE {
-    SUCCEDED = 0,
-    FAILED = 1,
-    RECAPTCHA_FAILED = 10
-}
 
 export type ErrorType = {
     message: string,

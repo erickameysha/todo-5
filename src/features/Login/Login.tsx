@@ -20,11 +20,7 @@ type FormikErrorType = {
     email?: string,
     password?: string
 }
-export type LoginDataType = {
-    email: string,
-    password: string,
-    rememberMe: boolean
-}
+
 export const Login = () => {
     const dispatch = useAppDispatch()
     const {isLoggedIn} = useAppSelector(authSelector)
