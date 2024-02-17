@@ -1,12 +1,8 @@
 import React, {useCallback, useEffect} from 'react'
 import {useAppDispatch, useAppSelector} from '../../app/store'
 import {
-    addTodolistTC,
-    changeTodolistTitleTC,
-    fetchTodolistsTC,
     FilterValuesType,
-    removeTodolistTC,
-    todolistsActions
+    todolistsActions, todolistThunk
 } from './todolists-reducer'
 import { tasksThunks} from './tasks-reducer'
 import {TaskStatuses} from '../../api/todolists-api'
@@ -28,7 +24,7 @@ export const TodolistsList: React.FC = () => {
 
     useEffect(() => {
         if (!isLoggedIn) return
-        const thunk = fetchTodolistsTC()
+        const thunk = todolistThunk.fetchTodolists()
         console.log('render')
         dispatch(thunk)
     }, [])
@@ -59,18 +55,17 @@ export const TodolistsList: React.FC = () => {
     }, [])
 
     const removeTodolist = useCallback(function (id: string) {
-        const thunk = removeTodolistTC(id)
-        dispatch(thunk)
+
+        dispatch(todolistThunk.removeTodolist({todolistId:id}))
     }, [])
 
     const changeTodolistTitle = useCallback(function (id: string, title: string) {
-        const thunk = changeTodolistTitleTC(id, title)
+        const thunk = todolistThunk.changeTodolistTitle({id, title})
         dispatch(thunk)
     }, [])
 
     const addTodolist = useCallback((title: string) => {
-        const thunk = addTodolistTC(title)
-        dispatch(thunk)
+        dispatch(todolistThunk.addTodolist(title))
     }, [])
     if (!isLoggedIn) {
         return <Navigate to={'/login'}/>

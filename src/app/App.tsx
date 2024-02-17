@@ -13,7 +13,7 @@ import {CircularProgress, LinearProgress} from "@mui/material";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
 import {Login} from "../features/Login/Login";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {authThunks, logOutTC} from "../features/Login/auth-reducer";
+import {authThunks} from "../features/Login/auth-reducer";
 import {appSelector, authSelector} from "./selectors";
 
 
@@ -25,7 +25,7 @@ function App() {
     const dispatch = useAppDispatch()
 
     const logOut = () => {
-        dispatch(logOutTC())
+        dispatch(authThunks.logOut())
     }
     useEffect(() => {
 

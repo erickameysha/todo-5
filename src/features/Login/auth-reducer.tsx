@@ -3,12 +3,10 @@ import {RESULT_CODE, tasksActions} from "../TodolistsList/tasks-reducer";
 import {handleServerAppError, handleServerError} from "../../utils/error-utils";
 import axios from "axios";
 import {appAction} from "../../app/app-reduce";
-// import {AppThunk} from "../../app/store";
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todolistsActions} from "../TodolistsList/todolists-reducer";
-import {AppThunk, AppThunkDispatch} from "../../app/store";
-import {Dispatch} from "redux";
 import {createAppAsyncThunk} from "../../utils/create-app-async-thunk";
+import {LoginDataType} from "./Login";
 
 const slice = createSlice({
     name: 'auth',
@@ -25,13 +23,20 @@ const slice = createSlice({
            .addCase(meTC.fulfilled, (state,action) =>{
                state.isLoggedIn = action.payload.value
            })
-
+           .addCase(login.fulfilled, (state,action)=>{
+               console.log(state)
+               state.isLoggedIn = action.payload.value
+           })
+           .addCase(logOut.fulfilled,(state, )=>{
+               console.log(state)
+               state.isLoggedIn = false
+           })
         }
 })
 
 
 // thunks
-const meTC = createAppAsyncThunk('auth/meTC', async (arg, thunkAPI) => {
+const meTC = createAppAsyncThunk<{value:boolean}, void>('auth/meTC', async (arg, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
     dispatch(appAction.setAppStatus({status: 'loading'}))
     try {
@@ -54,22 +59,28 @@ const meTC = createAppAsyncThunk('auth/meTC', async (arg, thunkAPI) => {
 
 })
 
-export const loginTC = (data: any): AppThunk => async (dispatch) => {
+export const login = createAppAsyncThunk<{value: boolean},{data:LoginDataType}>(`${slice.name}/login`, async (arg, thunkAPI)=>{
+    const {dispatch, rejectWithValue} = thunkAPI
     dispatch(appAction.setAppStatus({status: 'loading'}))
     try {
-        const res = await authAPI.login(data)
+        const res = await authAPI.login(arg.data)
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
-            dispatch(authActions.setIsLoggedIn({value: true}))
+          return {value: true}
         } else {
             handleServerAppError(dispatch, res.data)
+            return rejectWithValue(null)
         }
-    } catch (e) {
+    }  catch (e) {
         if (axios.isAxiosError(e))
             handleServerError(dispatch, e)
+        return rejectWithValue(null)
     }
-}
-export const logOutTC = (): AppThunk => async (dispatch) => {
+
+})
+export const logOut = createAppAsyncThunk<void,void
+>(`${slice.name}/logOut`, async (arg, thunkAPI)=>{
+    const {dispatch, rejectWithValue} = thunkAPI
     dispatch(appAction.setAppStatus({status: 'loading'}))
     try {
         const res = await authAPI.logOut()
@@ -77,16 +88,18 @@ export const logOutTC = (): AppThunk => async (dispatch) => {
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
             dispatch(tasksActions.logOut())
             dispatch(todolistsActions.logOut())
+            // dispatch(authActions.setIsLoggedIn({value: false}))
         } else {
             handleServerAppError(dispatch, res.data)
+            return rejectWithValue(null)
         }
     } catch (e) {
         if (axios.isAxiosError(e))
             handleServerError(dispatch, e)
+        return rejectWithValue(null)
     }
-}
-// types
-// type ActionsType = ReturnType<typeof setIsLoggedInAC> | any
+})
+
 export const authReducer = slice.reducer
 export const authActions = slice.actions
-export const authThunks = {meTC}
+export const authThunks = {meTC,login, logOut}

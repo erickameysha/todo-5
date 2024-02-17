@@ -9,10 +9,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useFormik} from "formik";
 import {useAppDispatch, useAppSelector} from "../../app/store";
-import {loginTC} from "./auth-reducer";
+
 import {Navigate} from "react-router-dom";
 import {appAction} from "../../app/app-reduce";
 import {authSelector} from "../../app/selectors";
+import {login} from "./auth-reducer";
 
 
 type FormikErrorType = {
@@ -56,7 +57,8 @@ export const Login = () => {
         },
         onSubmit: async (values, _) => {
             _.setSubmitting(true)
-            await dispatch(loginTC(values))
+            await dispatch(login({data:values}))
+            console.log(values)
             // alert(JSON.stringify(values, null,2));
             _.setSubmitting(false)
             formik.resetForm()
