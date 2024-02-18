@@ -5,14 +5,15 @@ import {
     todolistsActions, todolistThunk
 } from './todolists-reducer'
 import { tasksThunks} from './tasks-reducer'
-import {AddItemForm} from '../../common/components/AddItemForm/AddItemForm'
-import {Todolist} from './Todolist/Todolist'
+import {AddItemForm} from '../../common/components/AddItemForm'
+
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {Navigate} from "react-router-dom";
 import {authSelector, taskSelector, todoSelector} from "../../app/selectors";
-import {TaskStatuses} from "../../common/enums";
+import {TaskStatuses} from "common/enums";
+import {Todolist} from "./Todolist";
 
 export const TodolistsList: React.FC = () => {
 
@@ -25,7 +26,6 @@ export const TodolistsList: React.FC = () => {
     useEffect(() => {
         if (!isLoggedIn) return
         const thunk = todolistThunk.fetchTodolists()
-        console.log('render')
         dispatch(thunk)
     }, [])
 

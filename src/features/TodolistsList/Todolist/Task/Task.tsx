@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useCallback} from 'react'
-import {EditableSpan} from '../../../../common/components/EditableSpan/EditableSpan'
+import {EditableSpan} from '../../../../common/components/EditableSpan'
 import {TaskType} from '../../../../api/todolists-api'
 
 import {Delete} from '@mui/icons-material';

@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react'
-import {AddItemForm} from '../../../common/components/AddItemForm/AddItemForm'
-import {EditableSpan} from '../../../common/components/EditableSpan/EditableSpan'
+
+import {EditableSpan} from '../../../common/components/EditableSpan'
 import {Task} from './Task/Task'
 import {TaskTypeEntity} from '../../../api/todolists-api'
 import {FilterValuesType} from '../todolists-reducer'
@@ -11,6 +11,7 @@ import {Delete} from '@mui/icons-material';
 import {useAppDispatch} from "../../../app/store";
 import {RequestStatusType} from "../../../app/app-reduce";
 import {TaskStatuses} from "../../../common/enums";
+import {AddItemForm} from "../../../common/components/AddItemForm";
 
 type PropsType = {
     id: string
@@ -29,8 +30,6 @@ type PropsType = {
 }
 
 export const Todolist = React.memo(function (props: PropsType) {
-    console.log('Todolist called')
-
     const dispatch = useAppDispatch()
 
     useEffect(() => {
