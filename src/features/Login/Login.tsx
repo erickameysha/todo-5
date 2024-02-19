@@ -48,13 +48,13 @@ export const Login = () => {
             } else if (values.password.length < 5) {
                 errors.password = 'Must be more five symbols'
             }
-            console.log(errors)
+
             return errors
         },
         onSubmit: async (values, _) => {
             _.setSubmitting(true)
             await dispatch(login({data:values}))
-            console.log(values)
+
             // alert(JSON.stringify(values, null,2));
             _.setSubmitting(false)
             formik.resetForm()

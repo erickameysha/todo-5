@@ -25,11 +25,11 @@ const slice = createSlice({
                state.isLoggedIn = action.payload.value
            })
            .addCase(login.fulfilled, (state,action)=>{
-               console.log(state)
+
                state.isLoggedIn = action.payload.value
            })
            .addCase(logOut.fulfilled,(state, )=>{
-               console.log(state)
+
                state.isLoggedIn = false
            })
         }
@@ -79,8 +79,7 @@ export const login = createAppAsyncThunk<{value: boolean},{data:LoginDataType}>(
     }
 
 })
-export const logOut = createAppAsyncThunk<void,void
->(`${slice.name}/logOut`, async (arg, thunkAPI)=>{
+export const logOut = createAppAsyncThunk(`${slice.name}/logOut`, async (_, thunkAPI)=>{
     const {dispatch, rejectWithValue} = thunkAPI
     dispatch(appAction.setAppStatus({status: 'loading'}))
     try {
@@ -89,6 +88,7 @@ export const logOut = createAppAsyncThunk<void,void
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
             dispatch(tasksActions.logOut())
             dispatch(todolistsActions.logOut())
+
             // dispatch(authActions.setIsLoggedIn({value: false}))
         } else {
             handleServerAppError(dispatch, res.data)
