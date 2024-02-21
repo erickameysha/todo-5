@@ -168,55 +168,37 @@ const updateTask = createAppAsyncThunk<
     { taskId: string; domainModel: UpdateDomainTaskModelType; todolistId: string },
     { taskId: string, todolistId: string, domainModel: UpdateDomainTaskModelType }>
 ('tasks/updateTask', async (arg, thunkAPI) => {
-    const {dispatch, getState, rejectWithValue} = thunkAPI
-    const state = getState()
-    const task = state.tasks[arg.todolistId].find(t => t.id === arg.taskId)
-
-    dispatch(appAction.setAppStatus({status: 'loading'}))
-    dispatch(tasksActions.setEntityStatus({taskId: arg.taskId, todolistId: arg.todolistId, status: 'loading'}))
-    if (!task) {
-        //throw new Error("task not found in the state");
-        console.warn('task not found in the state')
-        return rejectWithValue(null)
-    }
-
-    const apiModel: UpdateTaskModelType = {
-        deadline: task.deadline,
-        description: task.description,
-        priority: task.priority,
-        startDate: task.startDate,
-        title: task.title,
-        status: task.status,
-        ...arg.domainModel
-    }
+    const { dispatch, rejectWithValue, getState } = thunkAPI;
     try {
-        const res = await todolistsAPI.updateTask(arg.todolistId, arg.taskId, apiModel)
-        if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
-            // const action = tasksActions.updateTask({taskId:arg.taskId, model: arg.domainModel, todolistId:arg.todolistId})
-            // dispatch(action)
-            dispatch(appAction.setAppStatus({status: 'succeeded'}))
-            return arg
-        } else {
-            if (res.data.messages.length) {
-                dispatch(appAction.setAppError({error: res.data.messages[0]}))
-                dispatch(tasksActions.setEntityStatus({taskId: arg.taskId, todolistId: arg.todolistId, status: 'idle'}))
-                return rejectWithValue(null)
-            } else {
-                dispatch(appAction.setAppError({error: 'Some error'}))
-                return rejectWithValue(null)
-            }
+        dispatch(appAction.setAppStatus({ status: "loading" }));
+        const state = getState();
+        const task = state.tasks[arg.todolistId].find((t) => t.id === arg.taskId);
+        if (!task) {
+            dispatch(appAction.setAppError({ error: "Task not found in the state" }));
+            return rejectWithValue(null);
+        }
 
+        const apiModel: UpdateTaskModelType = {
+            deadline: task.deadline,
+            description: task.description,
+            priority: task.priority,
+            startDate: task.startDate,
+            title: task.title,
+            status: task.status,
+            ...arg.domainModel,
+        };
+
+        const res = await todolistsAPI.updateTask(arg.todolistId, arg.taskId, apiModel);
+        if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
+            dispatch(appAction.setAppStatus({ status: "succeeded" }));
+            return arg;
+        } else {
+            handleServerAppError( dispatch,res.data,);
+            return rejectWithValue(null);
         }
     } catch (e) {
-        if (axios.isAxiosError<ErrorType>(e)) {
-           handleServerNetworkError( e, dispatch,)
-        } else {
-            const error = (e as {
-                message: string
-            })
-            handleServerNetworkError(e, dispatch)
-        }
-        return rejectWithValue(null)
+        handleServerNetworkError(e, dispatch);
+        return rejectWithValue(null);
     }
 
 })

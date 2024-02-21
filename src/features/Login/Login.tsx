@@ -13,7 +13,8 @@ import {useAppDispatch, useAppSelector} from "../../app/store";
 import {Navigate} from "react-router-dom";
 import {appAction} from "../../app/app-reduce";
 import {authSelector} from "../../app/selectors";
-import {login} from "./auth-reducer";
+import {authThunks, login} from "./auth-reducer";
+import {BaseResponseType} from "common/types";
 
 
 type FormikErrorType = {
@@ -36,28 +37,33 @@ export const Login = () => {
         },
         validate: (values) => {
 
-            const errors: FormikErrorType = {}
-            if (!values.email) {
-                errors.email = 'Required';
-            } else if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$n/i.test(values.email)) {
-                errors.email = 'Invalid email address'
-            }
-
-            if (!values.password) {
-                errors.password = 'Required'
-            } else if (values.password.length < 5) {
-                errors.password = 'Must be more five symbols'
-            }
-
-            return errors
+            // const errors: FormikErrorType = {}
+            // if (!values.email) {
+            //     errors.email = 'Required';
+            // } else if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$n/i.test(values.email)) {
+            //     errors.email = 'Invalid email address'
+            // }
+            //
+            // if (!values.password) {
+            //     errors.password = 'Required'
+            // } else if (values.password.length < 5) {
+            //     errors.password = 'Must be more five symbols'
+            // }
+            //
+            // return errors
         },
-        onSubmit: async (values, _) => {
-            _.setSubmitting(true)
-            await dispatch(login({data:values}))
-
-            // alert(JSON.stringify(values, null,2));
-            _.setSubmitting(false)
-            formik.resetForm()
+        onSubmit:  (values, formikHelpers) => {
+           dispatch(authThunks.login({data: values}))
+               .unwrap()
+               .then((res)=>{
+                   debugger
+               })
+               .catch((e: BaseResponseType)=>{
+                   debugger
+                   formikHelpers.setFieldError('email','error')
+                   formikHelpers.setFieldError('password','error password')
+                   // formikHelpers.setFieldError(e.fieldsErrors[0].field, e.fieldsErrors[0].error)
+               })
         },
     })
     if (isLoggedIn) {
@@ -79,12 +85,14 @@ export const Login = () => {
                 <form action="" onSubmit={formik.handleSubmit}>
                     <FormGroup>
                         <TextField
+                            type="email"
                             label="Email"
                             margin="normal"
                             error={!!(formik.touched.email && formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
                             {...formik.getFieldProps('email')}
                         />
+                        {formik.errors.email}
                           <TextField
                             type="password"
                             label="Password"
@@ -93,6 +101,7 @@ export const Login = () => {
                             helperText={formik.touched.password && formik.errors.password}
                             {...formik.getFieldProps('password')}
                         />
+                        {formik.errors.password}
                         <FormControlLabel
                             label={'Remember me'}
                             control={

@@ -2,8 +2,9 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "utils";
 import {authAPI} from "features/Login/authAPI";
 import {RESULT_CODE} from "common/enums";
-import axios from "axios/index";
 import {authActions} from "features/Login/auth-reducer";
+import axios from "axios";
+
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 

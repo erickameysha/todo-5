@@ -70,7 +70,7 @@ export const login = createAppAsyncThunk<{value: boolean},{data:LoginDataType}>(
           return {value: true}
         } else {
             handleServerAppError(dispatch, res.data)
-            return rejectWithValue(null)
+            return rejectWithValue(res.data)
         }
     }  catch (e) {
         if (axios.isAxiosError(e))
