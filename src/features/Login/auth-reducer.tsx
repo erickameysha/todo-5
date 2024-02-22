@@ -6,7 +6,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todolistsActions} from "../TodolistsList/todolists-reducer";
 
 
-import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "../../utils";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "../../common/utils";
 import {authAPI, LoginDataType} from "./authAPI";
 import {RESULT_CODE} from "../../common/enums";
 const slice = createSlice({
@@ -46,7 +46,8 @@ const meTC = createAppAsyncThunk<{value:boolean}, void>('auth/meTC', async (arg,
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
             return {value: true}
         }else{
-            handleServerAppError(dispatch,res.data)
+            const isShowAppError = !res.data.fieldsErrors.length
+            handleServerAppError(dispatch,res.data,isShowAppError )
             return rejectWithValue(null)
         }
     }catch (e) {
@@ -69,7 +70,8 @@ export const login = createAppAsyncThunk<{value: boolean},{data:LoginDataType}>(
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
           return {value: true}
         } else {
-            handleServerAppError(dispatch, res.data)
+            const isShowAppError = !res.data.fieldsErrors.length
+            handleServerAppError(dispatch, res.data,isShowAppError)
             return rejectWithValue(res.data)
         }
     }  catch (e) {

@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "utils";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
 import {authAPI} from "features/Login/authAPI";
 import {RESULT_CODE} from "common/enums";
 import {authActions} from "features/Login/auth-reducer";

@@ -13,7 +13,7 @@ import {useAppDispatch, useAppSelector} from "../../app/store";
 import {Navigate} from "react-router-dom";
 import {appAction} from "../../app/app-reduce";
 import {authSelector} from "../../app/selectors";
-import {authThunks, login} from "./auth-reducer";
+import {authThunks} from "./auth-reducer";
 import {BaseResponseType} from "common/types";
 
 
@@ -36,7 +36,7 @@ export const Login = () => {
             rememberMe: false
         },
         validate: (values) => {
-
+            //
             // const errors: FormikErrorType = {}
             // if (!values.email) {
             //     errors.email = 'Required';
@@ -55,15 +55,14 @@ export const Login = () => {
         onSubmit:  (values, formikHelpers) => {
            dispatch(authThunks.login({data: values}))
                .unwrap()
-               .then((res)=>{
-                   debugger
-               })
+
                .catch((e: BaseResponseType)=>{
-                   debugger
-                   formikHelpers.setFieldError('email','error')
-                   formikHelpers.setFieldError('password','error password')
-                   // formikHelpers.setFieldError(e.fieldsErrors[0].field, e.fieldsErrors[0].error)
-               })
+                 if (e.fieldsErrors) {
+                     e.fieldsErrors.forEach(el => {
+                         formikHelpers.setFieldError(el.field, el.error)
+                     })
+                 }
+                  })
         },
     })
     if (isLoggedIn) {
@@ -75,6 +74,7 @@ export const Login = () => {
                 <FormLabel>
                     <p>To log in get registered
                         <a href={'https://social-network.samuraijs.com/'}
+                           rel="noreferrer"
                            target={'_blank'}> here
                         </a>
                     </p>
@@ -88,20 +88,22 @@ export const Login = () => {
                             type="email"
                             label="Email"
                             margin="normal"
-                            error={!!(formik.touched.email && formik.errors.email)}
-                            helperText={formik.touched.email && formik.errors.email}
+                            // error={!!(formik.touched.email && formik.errors.email)}
+                            // helperText={formik.touched.email && formik.errors.email}
+
                             {...formik.getFieldProps('email')}
                         />
-                        {formik.errors.email}
+                        {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+                        {/*{formik.errors.email ? <div>{formik.errors.email}</div> : null}*/}
                           <TextField
                             type="password"
                             label="Password"
                             margin="normal"
-                            error={!!(formik.touched.password && formik.errors.password)}
-                            helperText={formik.touched.password && formik.errors.password}
+                            // error={!!(formik.touched.password && formik.errors.password)}
+                            // helperText={formik.touched.password && formik.errors.password}
                             {...formik.getFieldProps('password')}
                         />
-                        {formik.errors.password}
+                        {formik.errors.password ? <div>{formik.errors.password}</div> : null}
                         <FormControlLabel
                             label={'Remember me'}
                             control={
