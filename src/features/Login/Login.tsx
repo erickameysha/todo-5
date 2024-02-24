@@ -25,7 +25,6 @@ type FormikErrorType = {
 export const Login = () => {
     const dispatch = useAppDispatch()
     const {isLoggedIn} = useAppSelector(authSelector)
-    // const status = useAppSelector<any>((state) => state.app.status)
     useEffect(() => {
          dispatch(appAction.setAppStatus({status:'idle'}))
     })
@@ -36,26 +35,24 @@ export const Login = () => {
             rememberMe: false
         },
         validate: (values) => {
-            //
-            // const errors: FormikErrorType = {}
-            // if (!values.email) {
-            //     errors.email = 'Required';
-            // } else if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$n/i.test(values.email)) {
-            //     errors.email = 'Invalid email address'
-            // }
-            //
-            // if (!values.password) {
-            //     errors.password = 'Required'
-            // } else if (values.password.length < 5) {
-            //     errors.password = 'Must be more five symbols'
-            // }
-            //
-            // return errors
+            const errors: FormikErrorType = {}
+            if (!values.email) {
+                errors.email = 'Required';
+            } else if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$n/i.test(values.email)) {
+                errors.email = 'Invalid email address'
+            }
+
+            if (!values.password) {
+                errors.password = 'Required'
+            } else if (values.password.length < 5) {
+                errors.password = 'Must be more five symbols'
+            }
+
+            return errors
         },
         onSubmit:  (values, formikHelpers) => {
            dispatch(authThunks.login({data: values}))
                .unwrap()
-
                .catch((e: BaseResponseType)=>{
                  if (e.fieldsErrors) {
                      e.fieldsErrors.forEach(el => {

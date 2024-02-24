@@ -30,30 +30,30 @@ const slice = createSlice({
     }
 })
 
-const initializeApp = createAppAsyncThunk(`${slice.name}/initializeApp`,async (arg, thunkAPI)=>{
-    const {dispatch, rejectWithValue} = thunkAPI
-    dispatch(appAction.setAppStatus({status: 'loading'}))
-
-    try {
-        const res = await authAPI.me()
-        if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
-            dispatch(authActions.setIsLoggedIn({value: true}))
-            return {value: true}
-        }else{
-            handleServerAppError(dispatch,res.data)
-            return rejectWithValue(null)
-        }
-    }catch (e) {
-        if (axios.isAxiosError(e)) {
-            handleServerNetworkError( e, dispatch,)
-        }
-        return rejectWithValue(null)
-    } finally {
-        dispatch(appAction.setAppIsInitialized({isInitialized: true}))
-    }
-
-
-} )
+// const initializeApp = createAppAsyncThunk(`${slice.name}/initializeApp`,async (arg, thunkAPI)=>{
+//     const {dispatch, rejectWithValue} = thunkAPI
+//     dispatch(appAction.setAppStatus({status: 'loading'}))
+//
+//     try {
+//         const res = await authAPI.me()
+//         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
+//             dispatch(authActions.setIsLoggedIn({value: true}))
+//             return {value: true}
+//         }else{
+//             handleServerAppError(dispatch,res.data)
+//             return rejectWithValue(null)
+//         }
+//     }catch (e) {
+//         if (axios.isAxiosError(e)) {
+//             handleServerNetworkError( e, dispatch,)
+//         }
+//         return rejectWithValue(null)
+//     } finally {
+//         dispatch(appAction.setAppIsInitialized({isInitialized: true}))
+//     }
+//
+//
+// } )
 
 export const appReducer = slice.reducer
 export const appAction = slice.actions

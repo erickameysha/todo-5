@@ -15,21 +15,21 @@ import {Login} from "../features/Login/Login";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {authThunks} from "../features/Login/auth-reducer";
 import {appSelector, authSelector} from "./selectors";
+import {bindActionCreators} from "redux";
+import {useActions} from "common/hooks/useActions";
 
 
 function App() {
 
     const {isInitialized, status} = useAppSelector(appSelector)
-     const isLoggedIn = useAppSelector(authSelector)
+    const isLoggedIn = useAppSelector(authSelector)
+    const {meTC, logOut} = useActions(authThunks)
 
-    const dispatch = useAppDispatch()
-
-    const logOut = () => {
-        dispatch(authThunks.logOut())
+    const logOutCallback = () => {
+        logOut()
     }
     useEffect(() => {
-
-        dispatch(authThunks.meTC())
+        meTC()
     }, [])
     if (!isInitialized) {
         return <div
@@ -49,7 +49,7 @@ function App() {
                         News
                     </Typography>
 
-                    <Button onClick={logOut} color="inherit">{isLoggedIn ? 'Logout' : 'Login'}</Button>
+                    <Button onClick={logOutCallback} color="inherit">{isLoggedIn ? 'Logout' : 'Login'}</Button>
                 </Toolbar>
             </AppBar>
             {status === 'loading' && <LinearProgress color={'secondary'}/>}
@@ -59,7 +59,7 @@ function App() {
                     <Route path={'/'} element={<TodolistsList/>}/>
                     <Route path={'/login'} element={<Login/>}/>
                     <Route path={'/404'} element={<h1>404: Page not found</h1>}/>
-                        <Route path={'*'} element={<Navigate to={'/404'}/>}/>
+                    <Route path={'*'} element={<Navigate to={'/404'}/>}/>
                     {/*<TodolistsList/>*/}
                     {/*<Login/>*/}
                 </Routes>
