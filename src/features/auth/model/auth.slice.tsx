@@ -1,14 +1,14 @@
-import {tasksActions} from "../TodolistsList/tasks-reducer";
+import {tasksActions} from "features/TodolistsList/model/tasks-reducer";
 
 import axios from "axios";
-import {appAction} from "../../app/app-reduce";
+import {appAction} from "app/app-reduce";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {todolistsActions} from "../TodolistsList/todolists-reducer";
+import {todolistsActions} from "features/TodolistsList/model/todolists-reducer";
 
 
-import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "../../common/utils";
-import {authAPI, LoginDataType} from "./authAPI";
-import {RESULT_CODE} from "../../common/enums";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
+import {authApi, LoginDataType} from "features/auth/api/auth.api";
+import {RESULT_CODE} from "common/enums";
 import {thunkTryCatch} from "common/utils/thunkTryCatch";
 
 const slice = createSlice({
@@ -42,7 +42,7 @@ const slice = createSlice({
 const initializeApp = createAppAsyncThunk<{ value: boolean }, void>('auth/meTC', async (arg, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
     return thunkTryCatch(thunkAPI, async () => {
-        const res = await authAPI.me()
+        const res = await authApi.me()
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
             return {value: true}
@@ -62,7 +62,7 @@ export const login = createAppAsyncThunk<{ value: boolean }, {
 }>(`${slice.name}/login`, async (arg, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
     return thunkTryCatch(thunkAPI, async () => {
-        const res = await authAPI.login(arg.data)
+        const res = await authApi.login(arg.data)
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
             return {value: true}
@@ -76,7 +76,7 @@ export const login = createAppAsyncThunk<{ value: boolean }, {
 export const logOut = createAppAsyncThunk(`${slice.name}/logOut`, async (_, thunkAPI) => {
     const {dispatch, rejectWithValue} = thunkAPI
     return thunkTryCatch(thunkAPI, async () => {
-        const res = await authAPI.logOut()
+        const res = await authApi.logOut()
         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
             dispatch(appAction.setAppStatus({status: 'succeeded'}))
             dispatch(tasksActions.logOut())
@@ -90,6 +90,6 @@ export const logOut = createAppAsyncThunk(`${slice.name}/logOut`, async (_, thun
     })
 })
 
-export const authReducer = slice.reducer
+export const authSlice = slice.reducer
 export const authActions = slice.actions
 export const authThunks = {meTC: initializeApp, login, logOut}

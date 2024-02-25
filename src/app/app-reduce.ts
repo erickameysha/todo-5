@@ -1,8 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
-import {authAPI} from "features/Login/authAPI";
+import {authApi} from "features/auth/api/auth.api";
 import {RESULT_CODE} from "common/enums";
-import {authActions} from "features/Login/auth-reducer";
+import {authActions} from "features/auth/model/auth.slice";
 import axios from "axios";
 
 
@@ -30,30 +30,7 @@ const slice = createSlice({
     }
 })
 
-// const initializeApp = createAppAsyncThunk(`${slice.name}/initializeApp`,async (arg, thunkAPI)=>{
-//     const {dispatch, rejectWithValue} = thunkAPI
-//     dispatch(appAction.setAppStatus({status: 'loading'}))
-//
-//     try {
-//         const res = await authAPI.me()
-//         if (res.data.resultCode === RESULT_CODE.SUCCEDED) {
-//             dispatch(authActions.setIsLoggedIn({value: true}))
-//             return {value: true}
-//         }else{
-//             handleServerAppError(dispatch,res.data)
-//             return rejectWithValue(null)
-//         }
-//     }catch (e) {
-//         if (axios.isAxiosError(e)) {
-//             handleServerNetworkError( e, dispatch,)
-//         }
-//         return rejectWithValue(null)
-//     } finally {
-//         dispatch(appAction.setAppIsInitialized({isInitialized: true}))
-//     }
-//
-//
-// } )
+
 
 export const appReducer = slice.reducer
 export const appAction = slice.actions

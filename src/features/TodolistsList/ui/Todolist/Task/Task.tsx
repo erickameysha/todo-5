@@ -1,12 +1,12 @@
 import React, {ChangeEvent, useCallback} from 'react'
-import {EditableSpan} from '../../../../common/components/EditableSpan'
-import {TaskType} from '../../../../api/todolists-api'
+import {EditableSpan} from 'common/components/EditableSpan'
 
 import {Delete} from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import Checkbox from '@mui/material/Checkbox';
-import {RequestStatusType} from "../../../../app/app-reduce";
-import {TaskStatuses} from "../../../../common/enums";
+import {RequestStatusType} from "app/app-reduce";
+import {TaskStatuses} from "common/enums";
+import {TaskType} from "features/TodolistsList/api/tasksApi.types";
 
 type TaskPropsType = {
     task: TaskType

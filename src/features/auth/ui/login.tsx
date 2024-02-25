@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -7,61 +7,21 @@ import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {useFormik} from "formik";
-import {useAppDispatch, useAppSelector} from "../../app/store";
-
 import {Navigate} from "react-router-dom";
-import {appAction} from "../../app/app-reduce";
-import {authSelector} from "../../app/selectors";
-import {authThunks} from "./auth-reducer";
-import {BaseResponseType} from "common/types";
+import {useLogin} from "features/auth/lib/useLogin";
 
 
-type FormikErrorType = {
-    email?: string,
-    password?: string
+
+export type LoginParamsType = {
+    email: string,
+    password: string
+    rememberMe: boolean
+    captcha?: string
 }
 
 export const Login = () => {
-    const dispatch = useAppDispatch()
-    const {isLoggedIn} = useAppSelector(authSelector)
-    useEffect(() => {
-         dispatch(appAction.setAppStatus({status:'idle'}))
-    })
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: '',
-            rememberMe: false
-        },
-        validate: (values) => {
-            const errors: FormikErrorType = {}
-            if (!values.email) {
-                errors.email = 'Required';
-            } else if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$n/i.test(values.email)) {
-                errors.email = 'Invalid email address'
-            }
+    const {formik,isLoggedIn}= useLogin()
 
-            if (!values.password) {
-                errors.password = 'Required'
-            } else if (values.password.length < 5) {
-                errors.password = 'Must be more five symbols'
-            }
-
-            return errors
-        },
-        onSubmit:  (values, formikHelpers) => {
-           dispatch(authThunks.login({data: values}))
-               .unwrap()
-               .catch((e: BaseResponseType)=>{
-                 if (e.fieldsErrors) {
-                     e.fieldsErrors.forEach(el => {
-                         formikHelpers.setFieldError(el.field, el.error)
-                     })
-                 }
-                  })
-        },
-    })
     if (isLoggedIn) {
         return <Navigate to={'/'}/>
     }

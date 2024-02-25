@@ -1,17 +1,17 @@
 import React, {useCallback, useEffect} from 'react'
 
-import {EditableSpan} from '../../../common/components/EditableSpan'
-import {Task} from './Task/Task'
-import {TaskTypeEntity} from '../../../api/todolists-api'
-import {FilterValuesType} from '../todolists-reducer'
-import {tasksThunks} from '../tasks-reducer'
+import {EditableSpan} from 'common/components/EditableSpan'
+import {Task} from 'features/TodolistsList/ui/Todolist/Task/Task'
+import {FilterValuesType} from 'features/TodolistsList/model/todolists-reducer'
+import {tasksThunks} from 'features/TodolistsList/model/tasks-reducer'
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import {Delete} from '@mui/icons-material';
-import {useAppDispatch} from "../../../app/store";
-import {RequestStatusType} from "../../../app/app-reduce";
-import {TaskStatuses} from "../../../common/enums";
-import {AddItemForm} from "../../../common/components/AddItemForm";
+import {useAppDispatch} from "app/store";
+import {RequestStatusType} from "app/app-reduce";
+import {TaskStatuses} from "common/enums";
+import {AddItemForm} from "common/components/AddItemForm";
+import {TaskTypeEntity} from "features/TodolistsList/api/tasksApi.types";
 
 type PropsType = {
     id: string

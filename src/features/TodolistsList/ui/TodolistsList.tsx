@@ -1,20 +1,22 @@
 import React, {useCallback, useEffect} from 'react'
-import {useAppDispatch, useAppSelector} from '../../app/store'
+import {useAppDispatch, useAppSelector} from 'app/store'
 import {
     FilterValuesType,
     todolistsActions, todolistThunk
-} from './todolists-reducer'
-import {tasksActions, tasksThunks} from './tasks-reducer'
-import {AddItemForm} from '../../common/components/AddItemForm'
+} from 'features/TodolistsList/model/todolists-reducer'
+import {tasksActions, tasksThunks} from 'features/TodolistsList/model/tasks-reducer'
+import {AddItemForm} from 'common/components/AddItemForm'
 
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {Navigate} from "react-router-dom";
-import {authSelector, taskSelector, todoSelector} from "../../app/selectors";
 import {TaskStatuses} from "common/enums";
-import {Todolist} from "./Todolist";
+import {Todolist} from "features/TodolistsList/ui/Todolist";
 import {useActions} from "common/hooks/useActions";
+import {authSelector} from "features/auth/model/auth.selectors";
+import {todoSelector} from "features/TodolistsList/model/todolist.selector";
+import {taskSelector} from "features/TodolistsList/model/tasks.selector";
 
 export const TodolistsList: React.FC = () => {
 

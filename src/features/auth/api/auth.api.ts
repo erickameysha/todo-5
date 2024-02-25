@@ -1,9 +1,9 @@
 import {AxiosResponse} from "axios";
 
-import {instance} from "../../common/api";
-import {BaseResponseType} from "../../common/types";
+import {instance} from "common/api";
+import {BaseResponseType} from "common/types";
 
-export const authAPI = {
+export const authApi = {
     login(data: LoginDataType) {
         return instance.post<BaseResponseType<{ userId: number }>, AxiosResponse<BaseResponseType<{
             userId: number
