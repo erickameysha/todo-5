@@ -5,7 +5,7 @@ import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} fro
 import {RESULT_CODE, TaskPriorities, TaskStatuses} from "common/enums";
 import {thunkTryCatch} from "common/utils/thunkTryCatch";
 import {tasksAPI} from "features/TodolistsList/api/tasks.api";
-import {TaskType, TaskTypeEntity, UpdateTaskModelType} from "features/TodolistsList/api/tasksApi.types";
+import {TaskType, TaskTypeEntity, UpdateTaskModelType} from "features/TodolistsList/api/tasks.api.types";
 
 
 const slice = createSlice({
@@ -165,9 +165,7 @@ export type UpdateDomainTaskModelType = {
     startDate?: string
     deadline?: string
 }
-export type TasksStateType = {
-    [key: string]: Array<TaskTypeEntity>
-}
+export type TasksStateType = Record<string, TaskTypeEntity[]>
 
 
 export type ErrorType = {

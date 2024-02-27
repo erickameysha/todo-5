@@ -1,10 +1,8 @@
 
- import axios, {AxiosResponse} from 'axios'
-import {RequestStatusType} from "app/app-reduce";
+ import {AxiosResponse} from 'axios'
  import {instance} from "common/api";
- import {TaskPriorities, TaskStatuses} from "common/enums";
  import {BaseResponseType} from "common/types";
- import {GetTasksResponse, TaskType, UpdateTaskModelType} from "features/TodolistsList/api/tasksApi.types";
+ import {GetTasksResponse, TaskType, UpdateTaskModelType} from "features/TodolistsList/api/tasks.api.types";
 
 
 // api
@@ -28,6 +26,5 @@ export const tasksAPI = {
     }
 }
 
-// types
 
 

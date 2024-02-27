@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react'
-import {useAppDispatch, useAppSelector} from 'app/store'
+import {useAppSelector} from 'app/store'
 import {
     FilterValuesType,
     todolistsActions, todolistThunk
@@ -34,24 +34,6 @@ export const TodolistsList: React.FC = () => {
 
     }, [])
 
-    const removeTaskCallBack = useCallback(function (id: string, todolistId: string) {
-        removeTask({taskId: id, todolistId: todolistId})
-    }, [])
-
-    const addTaskCallback = useCallback(function (title: string, todolistId: string) {
-        // const thunk = tasksThunks.addTask(title, todolistId)
-        addTask({title, todolistId})
-    }, [])
-
-    const changeStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-        // const thunk =
-        updateTask({taskId: id, domainModel: {status}, todolistId})
-    }, [])
-
-    const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-        updateTask({taskId: id, domainModel: {title: newTitle}, todolistId})
-
-    }, [])
 
     const changeFilter = useCallback(function (value: FilterValuesType, todolistId: string) {
         changeTodolistFilter({id: todolistId, filter: value})
@@ -77,7 +59,7 @@ export const TodolistsList: React.FC = () => {
 
     return <>
         <Grid container style={{padding: '20px'}}>
-            <AddItemForm addItem={addTodolist}/>
+            <AddItemForm addItem={addTodolistCallBack}/>
         </Grid>
         <Grid container spacing={3}>
             {
@@ -91,13 +73,9 @@ export const TodolistsList: React.FC = () => {
                                 id={tl.id}
                                 title={tl.title}
                                 tasks={allTodolistTasks}
-                                removeTask={removeTaskCallBack}
                                 changeFilter={changeFilter}
-                                addTask={addTaskCallback}
-                                changeTaskStatus={changeStatus}
                                 filter={tl.filter}
                                 removeTodolist={removeTodolistCallBack}
-                                changeTaskTitle={changeTaskTitle}
                                 changeTodolistTitle={changeTodolistTitleCallBack}
                                 entityStatus={tl.entityStatus}
                             />

@@ -4,7 +4,7 @@ import {RequestStatusType} from "app/app-reduce";
  import {instance} from "common/api";
  import {TaskPriorities, TaskStatuses} from "common/enums";
  import {BaseResponseType} from "common/types";
- import {TodolistType} from "features/TodolistsList/api/tasksApi.types";
+ import {TodolistType} from "features/TodolistsList/api/tasks.api.types";
 
 
 // api
@@ -26,7 +26,6 @@ export const todolistsAPI = {
     },
 }
 
-// types
 
 
 
