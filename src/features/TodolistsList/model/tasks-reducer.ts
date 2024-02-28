@@ -112,8 +112,8 @@ const addTask = createAppAsyncThunk<{ task: TaskType },
         } else {
             handleServerAppError<{
                 item: TaskType
-            }>(dispatch, res.data)
-            return rejectWithValue(null)
+            }>(dispatch, res.data,false)
+            return rejectWithValue(res.data)
 
         }
     })

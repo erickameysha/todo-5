@@ -1,17 +1,10 @@
 import React, {useCallback, useEffect} from 'react'
 import {useAppSelector} from 'app/store'
-import {
-    FilterValuesType,
-    todolistsActions, todolistThunk
-} from 'features/TodolistsList/model/todolists-reducer'
-import {tasksActions, tasksThunks} from 'features/TodolistsList/model/tasks-reducer'
+import {todolistThunk} from 'features/TodolistsList/model/todolists-reducer'
 import {AddItemForm} from 'common/components/AddItemForm'
-
-
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {Navigate} from "react-router-dom";
-import {TaskStatuses} from "common/enums";
 import {Todolist} from "features/TodolistsList/ui/Todolist";
 import {useActions} from "common/hooks/useActions";
 import {authSelector} from "features/auth/model/auth.selectors";
@@ -24,9 +17,8 @@ export const TodolistsList: React.FC = () => {
     const tasks = useAppSelector(taskSelector)
     const {isLoggedIn} = useAppSelector(authSelector)
 
-    const {fetchTodolists,removeTodolist,changeTodolistTitle,addTodolist} = useActions(todolistThunk)
-    const {removeTask, addTask, updateTask, fetchTasks} = useActions(tasksThunks)
-    const {changeTodolistFilter} = useActions(todolistsActions)
+    const {fetchTodolists, addTodolist} = useActions(todolistThunk)
+
 
     useEffect(() => {
         if (!isLoggedIn) return
@@ -34,25 +26,12 @@ export const TodolistsList: React.FC = () => {
 
     }, [])
 
-
-    const changeFilter = useCallback(function (value: FilterValuesType, todolistId: string) {
-        changeTodolistFilter({id: todolistId, filter: value})
-
-    }, [])
-
-    const removeTodolistCallBack = useCallback(function (id: string) {
-
-      removeTodolist({todolistId: id})
-    }, [])
-
-    const changeTodolistTitleCallBack = useCallback(function (id: string, title: string) {
-        changeTodolistTitle({id, title})
-
-    }, [])
-
     const addTodolistCallBack = useCallback((title: string) => {
-   addTodolist(title)
+        return addTodolist(title).unwrap()
     }, [])
+
+
+
     if (!isLoggedIn) {
         return <Navigate to={'/login'}/>
     }
@@ -69,15 +48,9 @@ export const TodolistsList: React.FC = () => {
                     return <Grid item key={tl.id}>
                         <Paper style={{padding: '10px'}}>
                             <Todolist
-
-                                id={tl.id}
-                                title={tl.title}
+                                todolist={tl}
                                 tasks={allTodolistTasks}
-                                changeFilter={changeFilter}
-                                filter={tl.filter}
-                                removeTodolist={removeTodolistCallBack}
-                                changeTodolistTitle={changeTodolistTitleCallBack}
-                                entityStatus={tl.entityStatus}
+
                             />
                         </Paper>
                     </Grid>

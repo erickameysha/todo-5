@@ -1,15 +1,15 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
-import { AddBox } from '@mui/icons-material';
+import {AddBox} from '@mui/icons-material';
 import {RequestStatusType} from "../../../app/app-reduce";
 
-type AddItemFormPropsType = {
-    addItem: (title: string) => void
-disabled?: boolean
+type PropsType = {
+    addItem: (title: string) => Promise<any>
+    disabled?: boolean
 }
 
-export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
+export const AddItemForm = React.memo(function (props: PropsType) {
 
 
     let [title, setTitle] = useState('')
@@ -17,8 +17,15 @@ export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
 
     const addItem = () => {
         if (title.trim() !== '') {
-            props.addItem(title);
-            setTitle('');
+            props.addItem(title)
+                .then(res => {
+                        setTitle('');
+                    }
+                )
+                .catch((e) => {
+                    setError(e.messages)
+                })
+
         } else {
             setError('Title is required');
         }
@@ -47,7 +54,7 @@ export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
                    helperText={error}
                    disabled={props.disabled}
         />
-        <IconButton color="primary" onClick={addItem}  disabled={props.disabled}>
+        <IconButton color="primary" onClick={addItem} disabled={props.disabled}>
             <AddBox/>
         </IconButton>
     </div>
